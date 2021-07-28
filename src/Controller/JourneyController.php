@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Journeys;
 use App\Form\JourneyCreationType;
+use App\Form\QuitJourneyType;
 use App\Form\RegisterJourneyType;
 use App\Repository\CityRepository;
 use App\Repository\JourneysRepository;
@@ -72,13 +73,45 @@ class JourneyController extends AbstractController
 
 
 
-
-
         return $this->render('journey/register.html.twig', [
             'journey' => $journey,
             'form' => $form->createView(),
         ]);
     }
+
+
+    /**
+     * @Route("/{id}/quit", name="quit")
+     */
+    public function quit(int $id, JourneysRepository $journeysRepository, Request $request, EntityManagerInterface $entityManager): Response
+    {
+        $user = $this->getUser();
+        $journey = $journeysRepository->find($id);
+
+        $form = $this->createForm(QuitJourneyType::class, $journey);
+        $form->handleRequest($request);
+
+
+        if ($form->isSubmitted()) {
+
+            $journey->removeUser($user);
+
+            $entityManager->persist($journey);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'vous vous êtes bien désisté');
+            return $this->redirectToRoute('main');
+        }
+
+
+
+        return $this->render('journey/quit.html.twig', [
+            'journey' => $journey,
+            'form' => $form->createView(),
+        ]);
+    }
+
+
 
 
     /**
