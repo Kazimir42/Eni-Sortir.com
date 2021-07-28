@@ -195,9 +195,14 @@
                                 <a class="dropdown-item" href="{{ path('journey_view', {'id': journey.id}) }}">
                                   Afficher
                                 </a>
-                                <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
-                                  S'inscrire
-                                </a>
+
+                                  {% for users in journey.users %}{% if user.username != users.username %}
+                                      <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
+                                          S'inscrire
+                                      </a>
+                                  {% endif %}{% endfor %}
+
+
                                   {% for users in journey.users %}{% if user.username == users.username %}
                                       <a class="dropdown-item" href="{{ path('journey_quit', {'id': journey.id}) }}">
                                           Se désister
