@@ -30,8 +30,8 @@ class MainController extends AbstractController
 
 
 
+
         return $this->render('main/index.html.twig', [
-            'controller_name' => 'MainController',
             'journeys' => $journeys,
             'form' => $form->createView(),
             'user' => $user,

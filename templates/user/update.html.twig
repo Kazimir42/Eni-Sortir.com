@@ -1,0 +1,52 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}
+    {{ parent() }} | Modifier mon profil
+{% endblock %}
+
+{% block body %}
+
+    {{ form_start(userForm) }}
+
+    <div class="container-tight py-4">
+        <div class="text-center mb-4">
+            <a href="."><img src="{{ asset('images/.png') }}" height="36" alt=""></a>
+        </div>
+        <div class="card card-md">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Modifier mon profil</h2>
+                <div class="mb-2">
+                    Pseudo :
+                    {{ form_widget(userForm.username) }}
+                </div>
+                <div class="mb-2">
+                    Nom :
+                    {{ form_widget(userForm.lastname) }}
+                </div>
+                <div class="mb-2">
+                    Prénom :
+                    {{ form_widget(userForm.firstname) }}
+                </div>
+                <div class="mb-2">
+                    Téléphone :
+                    {{ form_widget(userForm.phone) }}
+                </div>
+                <div class="mb-2">
+                    Email :
+                    {{ form_widget(userForm.mail) }}
+                </div>
+                <div class="mb-2">
+                    Campus :
+                    {{ form_widget(userForm.college) }}
+                </div>
+
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary w-100">Enregistrer les modifications</button>
+            </div>
+        </div>
+
+        {{ form_end(userForm) }}
+    </div>
+{% endblock %}

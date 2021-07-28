@@ -1,11 +1,6 @@
-
-
-
-
-
 {% extends 'base.html.twig' %}
 
-{% block title %}{{ parent() }} | Log in{% endblock %}
+{% block title %}{{ parent() }} | Se connecter{% endblock %}
 
 {% block body %}
 
@@ -26,14 +21,14 @@
         </div>
         <form method="post" class="card card-md">
             <div class="card-body">
-                <h2 class="card-title text-center mb-4">Login to your account</h2>
+                <h2 class="card-title text-center mb-4">Se connecter</h2>
                 <div class="mb-3">
-                    <label for="inputUsername">Username</label>
+                    <label for="inputUsername">Pseudo</label>
                     <input type="text" value="{{ last_username }}" name="username" id="inputUsername" class="form-control" autocomplete="username" required autofocus>
                 </div>
                 <div class="mb-2">
                     <label for="inputPassword" class="form-label">
-                        Password
+                        Mot de passe
                         <span class="form-label-description">
                   {# <a href="./forgot-password.html">I forgot password</a> #}
                 </span>
@@ -46,15 +41,18 @@
                         >
                     </div>
 
+                    <div class="checkbox mb-3">
+                        <label>
+                            <input type="checkbox" name="_remember_me"> Se souvenir de moi
+                        </label>
+                    </div>
+
                 </div>
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary w-100">Sign in</button>
                 </div>
             </div>
         </form>
-        <div class="text-center text-muted mt-3">
-            Don't have account yet? <a href="{{ path('app_register') }}" tabindex="-1">Sign up</a>
-        </div>
     </div>
 
 {% endblock %}

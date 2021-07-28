@@ -1,0 +1,51 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | S'inscrire à une sortie{% endblock %}
+
+{% block body %}
+
+
+
+<div class="col-lg-12" style="margin-bottom: 1em">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">S'inscire à une sortie</h3>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><span class="font-weight-bold">Nom de la sortie : </span>{{journey.name }}</p>
+                    <p><span class="font-weight-bold">Date et heure de la sortie : </span>{{journey.startingDate|date('d/m/y H:i') }}</p>
+                    <p><span class="font-weight-bold">Date limite d'inscription : </span>{{journey.deadlineDate|date('d/m/y') }}</p>
+                    <p><span class="font-weight-bold">Nombre de places : </span>{{journey.nbInscriptionMax}}</p>
+                    <p><span class="font-weight-bold">Durée : </span>{{journey.duration}} minutes</p>
+                    <p><span class="font-weight-bold">Description et infos : </span>{{journey.description}}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><span class="font-weight-bold">Campus : </span>{{journey.college.name}}</p>
+                    <p><span class="font-weight-bold">Lieu : </span>{{journey.place.name}}</p>
+                    <p><span class="font-weight-bold">Rue : </span>{{journey.place.street}}</p>
+                    <p><span class="font-weight-bold">Code postal : </span>{{journey.place.city.postal}}</p>
+                    <p><span class="font-weight-bold">Latitude : </span>{{journey.place.x}}</p>
+                    <p><span class="font-weight-bold">Longitude : </span>{{journey.place.y}}</p>
+                </div>
+            </div>
+        </div>
+
+
+        {{ form_start(form) }}
+
+            {{ form_widget(form) }}
+
+        <button class="btn btn-primary">S'inscrire</button>
+
+        {{ form_end(form) }}
+
+
+
+    </div>
+</div>
+
+
+
+{% endblock %}

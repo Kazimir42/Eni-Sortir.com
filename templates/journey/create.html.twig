@@ -1,0 +1,61 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Nouvelle sortie{% endblock %}
+
+{% block body %}
+
+
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Nouvelle sortie</h3>
+        </div>
+        <div class="card-body">
+            {{ form_start(form) }}
+
+                {{ form_widget(form) }}
+
+            {{ form_end(form) }}
+
+            Campus : {{ user.college.name }}
+            <br />
+
+
+                <label for="place">Ville</label>
+                <select id="villeSelect" name="" class="form-select" onclick="getIdCity(this)">
+                    {% for city in citys %}
+                        <option value="{{ city.id }}">{{city.name}} </option>
+                    {% endfor %}
+                </select>
+
+
+                <label for="place">Lieu</label>
+                <select id="lieuSelect" name="" class="form-select" onclick="getIdCity(this)">
+                        <option value="{{ citys[0].place[0].id }}">{{citys[0].place[0].name}} </option>
+                </select>
+
+
+            <script>
+                function getIdCity(e){
+                    let placeId = e.value;
+
+                    console.log(placeId);
+                }
+
+            </script>
+
+
+
+
+
+
+
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
