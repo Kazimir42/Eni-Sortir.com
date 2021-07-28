@@ -2,11 +2,10 @@
 
 namespace App\Form;
 
+use App\Entity\College;
 use App\Entity\User;
-use Doctrine\DBAL\Types\TextType;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\CollectionType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 
@@ -20,7 +19,11 @@ class UserType extends AbstractType
             ->add('firstname')
             ->add('phone')
             ->add('mail')
-            ->add('college', CollectionType::class);
+            ->add('college', EntityType::class, [
+                'class' => College::class,
+                'choice_label' => 'name',
+            ])
+        ;
     }
 
     public function configureOptions(OptionsResolver $resolver)

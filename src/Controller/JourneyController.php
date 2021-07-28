@@ -3,12 +3,14 @@
 namespace App\Controller;
 
 use App\Entity\Journeys;
+use App\Entity\Status;
 use App\Form\JourneyCreationType;
 use App\Form\QuitJourneyType;
 use App\Form\RegisterJourneyType;
 use App\Repository\CityRepository;
 use App\Repository\JourneysRepository;
 use App\Repository\PlaceRepository;
+use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -117,24 +119,47 @@ class JourneyController extends AbstractController
     /**
      * @Route("/create", name="create")
      */
-    public function create(Request $request, CityRepository $cityRepository, PlaceRepository $placeRepository, SerializerInterface $serializer): Response
+    public function create(Request $request, CityRepository $cityRepository, PlaceRepository $placeRepository, SerializerInterface $serializer, EntityManagerInterface $entityManager, StatusRepository $statusRepository): Response
     {
         $user = $this->getUser();
-        $citys = $cityRepository->findAll();
-        $places = $placeRepository->findAll();
+        $citys = $cityRepository->findAllArray();
+        $places = $placeRepository->findAllArray();
 
 
         $journey = new Journeys();
         $form = $this->createForm(JourneyCreationType::class, $journey);
         $form->handleRequest($request);
 
-        //dd($citys[0]->getPlace());
+
+        $jsonCitys = $serializer->serialize($citys, 'json');
+        $jsonPlaces = $serializer->serialize($places, 'json');
+
+
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $journey->setCollege($user->getCollege());
+            $journey->setUser($user);
+
+
+            $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+
+            $journey->setStatus($status);
+
+
+            $entityManager->persist($journey);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie crée !');
+            return $this->redirectToRoute('main');
+        }
 
 
         return $this->render('journey/create.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
-            'citys' => $citys,
+            'citys' => $jsonCitys,
+            'placesJson' => $jsonPlaces,
             'places' => $places,
         ]);
     }

@@ -14,36 +14,55 @@
         <div class="card-body">
             {{ form_start(form) }}
 
-                {{ form_widget(form) }}
+            {{ form_label(form.name) }}
+            <div>
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+            </div>
+
+            <br />
+
+            {{ form_label(form.startingDate) }}
+            {{ form_widget(form.startingDate, {'attr': {'class': 'form-control'}}) }}
+
+            <br />
+
+            {{ form_label(form.deadlineDate) }}
+            {{ form_widget(form.deadlineDate, {'attr': {'class': 'form-control'}}) }}
+
+            <br />
+
+            {{ form_label(form.nbInscriptionMax) }}
+            {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control'}}) }}
+
+            <br />
+
+            {{ form_label(form.duration) }}
+            {{ form_widget(form.duration, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+
+            <br />
+
+            {{ form_label(form.description) }}
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+
+            <br />
+
+            <label>Campus :</label>
+            <span class="font-weight-bold">{{ user.college.name }}</span>
+
+            <br /><br />
+
+            {{ form_label(form.place) }}
+            {{ form_widget(form.place, {'attr' : {
+                'oninput': 'getId(this)',
+                'class': 'form-select'
+            }}) }}
+
+            <br />
+
+            <button class="btn btn-primary">Create</button>
 
             {{ form_end(form) }}
 
-            Campus : {{ user.college.name }}
-            <br />
-
-
-                <label for="place">Ville</label>
-                <select id="villeSelect" name="" class="form-select" onclick="getIdCity(this)">
-                    {% for city in citys %}
-                        <option value="{{ city.id }}">{{city.name}} </option>
-                    {% endfor %}
-                </select>
-
-
-                <label for="place">Lieu</label>
-                <select id="lieuSelect" name="" class="form-select" onclick="getIdCity(this)">
-                        <option value="{{ citys[0].place[0].id }}">{{citys[0].place[0].name}} </option>
-                </select>
-
-
-            <script>
-                function getIdCity(e){
-                    let placeId = e.value;
-
-                    console.log(placeId);
-                }
-
-            </script>
 
 
 

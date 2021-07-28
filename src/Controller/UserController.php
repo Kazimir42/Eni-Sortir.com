@@ -28,16 +28,15 @@ class UserController extends AbstractController
     {
         $user = $this->getUser();
 
-
         $userForm = $this->createForm(UserType::class, $user);
 
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()){
-            if($userForm['inputPassword'] === $userForm['confirmPassword']) {
-                $entityManager->persist($user);
-                $entityManager->flush();
-            }
+            $entityManager->persist($user);
+            $entityManager->flush();
+
+
 
             $this->addFlash('success', 'Profil modifié !');
             return $this->redirectToRoute('profile_details');

@@ -16,7 +16,7 @@
 
                 <div class="row">
                     <div class="col-lg-6 mb-3">
-                        <label class="form-label">{{ form_label(form.college) }}</label>
+                        {{ form_label(form.college) }}
                         <div>
                             {{ form_widget(form.college, {'attr': { 'class': 'form-select'}}) }}
                         </div>
@@ -25,7 +25,7 @@
 
                     <div class="col-lg-6 mb-3">
 
-                        <label class="form-label">{{ form_label(form.toSearch) }}</label>
+                        {{ form_label(form.toSearch) }}
                         <div>
                             {{ form_widget(form.toSearch, {'attr': { 'class': 'form-control'}}) }}
                         </div>
@@ -37,7 +37,7 @@
 
                     <div class="col-lg-6 mb-3">
 
-                        <label class="form-label">{{ form_label(form.startDate) }}</label>
+                        {{ form_label(form.startDate) }}
                         <div>
                             {{ form_widget(form.startDate, {'attr': {'class': 'form-control'}}) }}
                         </div>
@@ -45,7 +45,7 @@
                     </div>
                     <div class="col-lg-6 mb-3">
 
-                        <label class="form-label">{{ form_label(form.endDate) }}</label>
+                        {{ form_label(form.endDate) }}
                         <div>
                             {{ form_widget(form.endDate, {'attr': {'class': 'form-control',}}) }}
                         </div>
@@ -196,11 +196,12 @@
                                   Afficher
                                 </a>
 
-                                  {% for users in journey.users %}{% if user.username != users.username %}
+                                  {# {% for users in journey.users %}
+                                      {% if user.username != users.username %}#}
                                       <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
                                           S'inscrire
                                       </a>
-                                  {% endif %}{% endfor %}
+                                  {# {% endif %}{% endfor %} #}
 
 
                                   {% for users in journey.users %}{% if user.username == users.username %}
