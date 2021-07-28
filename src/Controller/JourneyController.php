@@ -141,8 +141,12 @@ class JourneyController extends AbstractController
             $journey->setCollege($user->getCollege());
             $journey->setUser($user);
 
-
-            $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+            //save
+            if($form->get('save')->isClicked()){
+                $status = $statusRepository->findOneBy(array('name' => "Créée"));
+            }else{//publish
+                $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+            }
 
             $journey->setStatus($status);
 
