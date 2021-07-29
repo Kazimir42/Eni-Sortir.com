@@ -1,0 +1,73 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Modifier la sortie{% endblock %}
+
+{% block body %}
+
+
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Modifier la sortie</h3>
+        </div>
+        <div class="card-body">
+
+            <div class="card-body">
+                {{ form_start(form) }}
+
+                {{ form_label(form.name) }}
+                <div>
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <br />
+
+                {{ form_label(form.startingDate) }}
+                {{ form_widget(form.startingDate, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.deadlineDate) }}
+                {{ form_widget(form.deadlineDate, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.nbInscriptionMax) }}
+                {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.duration) }}
+                {{ form_widget(form.duration, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+
+                <br />
+
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                <label>Campus :</label>
+                <span class="font-weight-bold">{{ user.college.name }}</span>
+
+                <br /><br />
+
+                {{ form_label(form.place) }}
+                {{ form_widget(form.place, {'attr' : {
+                    'class': 'form-select'
+                }}) }}
+
+                <br />
+
+                <a href="{{ path('main') }}"><button type="button" class="btn">Cancel</button></a>
+
+                {{ form_end(form) }}
+
+        </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

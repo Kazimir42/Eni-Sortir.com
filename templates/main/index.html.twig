@@ -148,6 +148,8 @@
 
                     {% for journey in journeys %}
 
+                    {# {% if journey.status.name != "Créée" %} #}
+
                     <tr>
                         <td>
                             {{ journey.name }}
@@ -204,17 +206,28 @@
                                   {# {% endif %}{% endfor %} #}
 
 
-                                  {% for users in journey.users %}{% if user.username == users.username %}
+                                  {% for journey_user in journey.users %}{% if user.username == journey_user.username %}
                                       <a class="dropdown-item" href="{{ path('journey_quit', {'id': journey.id}) }}">
                                           Se désister
                                       </a>
                                   {% endif %}{% endfor %}
+
+                                  {% if user.username == journey.user.username %}
+                                      {% if journey.status.name == "Créée" %}
+                                            <a class="dropdown-item" href="{{ path('journey_edit', {'id': journey.id}) }}">
+                                                Modifier
+                                            </a>
+                                          {% endif %}
+                                  {% endif %}
+
+
 
                               </div>
                             </span>
                         </td>
                     </tr>
 
+                    {# {% endif %} #}
                     {% endfor %}
 
                     </tbody>

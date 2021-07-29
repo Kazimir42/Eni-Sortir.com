@@ -3,6 +3,8 @@
 namespace App\Form;
 
 use App\Data\SearchData;
+use App\Entity\College;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -16,14 +18,9 @@ class FilterFormType extends AbstractType{
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('college', ChoiceType::class, [
-                'label' => 'Campus',
-                'required' => false,
-                'choices' => [
-                    'Saint Herblain' => 'Saint Herblain',
-                    'Paris' => 'Paris',
-                    'Metz' => 'Metz',
-                ]
+            ->add('college', EntityType::class, [
+                'class' => College::class,
+                'choice_label' => 'name'
             ])
             ->add('toSearch', TextType::class, [
                 'label' => 'Le nom de la sortie contient : ',

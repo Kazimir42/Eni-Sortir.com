@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Journeys;
 use App\Entity\Status;
+use App\Form\EditJourneyType;
 use App\Form\JourneyCreationType;
 use App\Form\QuitJourneyType;
 use App\Form\RegisterJourneyType;
@@ -162,9 +163,25 @@ class JourneyController extends AbstractController
         return $this->render('journey/create.html.twig', [
             'form' => $form->createView(),
             'user' => $user,
-            'citys' => $jsonCitys,
-            'placesJson' => $jsonPlaces,
-            'places' => $places,
+        ]);
+    }
+
+
+    /**
+     * @Route("/{id}/edit", name="edit")
+     */
+    public function edit(int $id, Request $request, JourneysRepository $journeysRepository){
+
+        $user = $this->getUser();
+        $journey = $journeysRepository->find($id);
+
+        $form = $this->createForm(EditJourneyType::class, $journey);
+        $form->handleRequest($request);
+
+
+        return $this->render('journey/edit.html.twig', [
+            'form' => $form->createView(),
+            'user' => $user,
         ]);
     }
 }

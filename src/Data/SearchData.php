@@ -4,13 +4,16 @@
 namespace App\Data;
 
 
+use App\Entity\College;
+use Doctrine\ORM\Mapping as ORM;
+
 class SearchData
 {
 
     /**
-     * @var string
+     * @ORM\ManyToOne(targetEntity=College::class, inversedBy="User")
      */
-    public $college = '';
+    private $college;
 
     /**
      * @var string
@@ -52,7 +55,6 @@ class SearchData
 
 
 
-
     public function getStartDate(): ?\DateTimeInterface
     {
         return $this->startDate;
@@ -77,5 +79,20 @@ class SearchData
 
         return $this;
     }
+
+
+
+    public function getCollege(): ?College
+    {
+        return $this->college;
+    }
+
+    public function setCollege(?College $college): self
+    {
+        $this->college = $college;
+
+        return $this;
+    }
+
 
 }

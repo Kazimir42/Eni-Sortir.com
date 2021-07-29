@@ -33,10 +33,10 @@ class JourneysRepository extends ServiceEntityRepository
             ->join('journeys.user', 'user');
 
 
-        if (!empty($searchData->college)){
+        if (!empty($searchData->getCollege())){
             $query = $query
                 ->andWhere('college.name = :college')
-                ->setParameter('college', $searchData->college);
+                ->setParameter('college', $searchData->getCollege()->getName());
         }
 
         if (!empty($searchData->toSearch)){
