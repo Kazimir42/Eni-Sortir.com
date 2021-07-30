@@ -20,7 +20,8 @@ class FilterFormType extends AbstractType{
         $builder
             ->add('college', EntityType::class, [
                 'class' => College::class,
-                'choice_label' => 'name'
+                'choice_label' => 'name',
+                'label' => 'Campus',
             ])
             ->add('toSearch', TextType::class, [
                 'label' => 'Le nom de la sortie contient : ',

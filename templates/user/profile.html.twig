@@ -5,44 +5,48 @@
 {% endblock %}
 
 {% block body %}
-    <div class="card">
-        <div class="card-header">
-                <h3 class="card-title">Mon profil</h3>
+    <div class="container-tight py-4">
+        <div class="text-center mb-4">
+            <a href="."><img src="{{ asset('images/.png') }}" height="36" alt=""></a>
         </div>
-        <div class="card-body">
-            <div class="mb-2">
-                Pseudo : {{ app.user.username }}
-            </div>
-            <div class="mb-2">
-                Nom : {{ app.user.lastname }}
-            </div>
-            <div class="mb-2">
-                Prénom : {{ app.user.firstname }}
-            </div>
-            <div class="mb-2">
-                Téléphone : {{ app.user.phone }}
-            </div>
-            <div class="mb-2">
-                Email : {{ app.user.mail}}
-            </div>
-            <div class="mb-2">
-                Campus : {{ app.user.college.name }}
-            </div>
-            <div class="row">
-                <div class="col-md-2">
-                    <a href="{{ path('profile_update') }}">
-                        <button type="submit" class="btn btn-primary w-100">modifier mon profil</button>
-                    </a>
+        <div class="card card-md">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Mon profil</h2>
+                <div class="mb-2">
+                    Pseudo : {{ app.user.username }}
                 </div>
-                <div class="col-md-2">
-                    <a href="{{ path('edit_password') }}">
-                        <button type="submit" class="btn btn-primary w-100">modifier mon mot de passe</button>
-                    </a>
+                {% if app.user.avatar %}
+                    <div class="mb-2">
+                        <img src="{{ asset('avatars/' ~ app.user.avatar) }}" alt="{{ app.user.username }}">
+                    </div>
+                {% endif %}
+                <div class="mb-2">
+                    Nom : {{ app.user.lastname }}
                 </div>
-            </div>
-        </div>
+                <div class="mb-2">
+                    Prénom : {{ app.user.firstname }}
+                </div>
+                <div class="mb-2">
+                    Téléphone : +33{{ app.user.phone }}
+                </div>
+                <div class="mb-2">
+                    Email : {{ app.user.mail}}
+                </div>
+                <div class="mb-2">
+                    Campus : {{ app.user.college.name }}
+                </div>
 
-    </div>
+
+            </div>
+            <div class="form-footer">
+                <a href="{{ path('profile_update') }}">
+                    <button type="submit" class="btn btn-primary w-100">modifier mon profil</button>
+                </a>
+                <a href="{{ path('edit_password') }}">
+                    <button type="submit" class="btn btn-primary w-100">modifier mon mot de passe</button>
+                </a>
+            </div>
+        </div>
     </div>
     </div>
 

@@ -6,6 +6,7 @@ use App\Data\SearchData;
 use App\Form\FilterFormType;
 use App\Repository\CollegeRepository;
 use App\Repository\JourneysRepository;
+use App\Service\UpdateJourneys;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +17,10 @@ class MainController extends AbstractController
     /**
      * @Route("", name="main")
      */
-    public function index(JourneysRepository $journeysRepository, CollegeRepository $collegeRepository, Request $request): Response
+    public function index(JourneysRepository $journeysRepository, CollegeRepository $collegeRepository, Request $request, UpdateJourneys $updateJourneys): Response
     {
+        //CHANGE TO COMMAND WHEN DATETIME STOP BUGGING
+        $updateJourneys->updateStatusJourney();
 
         $user = $this->getUser();
 

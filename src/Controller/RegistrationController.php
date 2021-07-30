@@ -13,7 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 class RegistrationController extends AbstractController
 {
     /**
-     * @Route("/register", name="app_register")
+     * @Route("admin/register", name="admin_register")
      */
     public function register(Request $request, UserPasswordHasherInterface $passwordEncoder): Response
     {
@@ -34,9 +34,10 @@ class RegistrationController extends AbstractController
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);
             $entityManager->flush();
-            // do anything else you need here, like send an email
 
-            return $this->redirectToRoute('main');
+            $this->addFlash('success', 'Utilisateur ajouté !');
+
+            return $this->redirectToRoute('admin');
         }
 
         return $this->render('registration/register.html.twig', [

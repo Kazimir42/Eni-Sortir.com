@@ -188,7 +188,16 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {{ journey.user.username }}
+                            {% if journey.user.username != app.user.username %}
+
+                                <a href="{{ path('profile_details_user', {'username' : journey.user.username}) }}">
+                                    {{ journey.user.username }}</a>
+
+                            {% else %}
+
+                                {{ journey.user.username }}
+
+                            {% endif %}
                         </td>
                         <td class="text-end">
                             <span class="dropdown">
@@ -198,19 +207,42 @@
                                   Afficher
                                 </a>
 
-                                  {# {% for users in journey.users %}
-                                      {% if user.username != users.username %}#}
-                                      <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
-                                          S'inscrire
-                                      </a>
-                                  {# {% endif %}{% endfor %} #}
 
 
-                                  {% for journey_user in journey.users %}{% if user.username == journey_user.username %}
-                                      <a class="dropdown-item" href="{{ path('journey_quit', {'id': journey.id}) }}">
-                                          Se désister
-                                      </a>
-                                  {% endif %}{% endfor %}
+                                  {% if journey.users is empty %}
+                                      {% if journey.user.username != user.username %}
+                                          {% if journey.status.name == "Ouverte" %}
+                                                <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
+                                                  S'inscrire
+                                                </a>
+                                              {% endif %}
+                                      {% endif %}
+                                  {% endif %}
+
+
+
+                                  {% for journey_user in journey.users %}
+
+                                      {% if user.username == journey_user.username %}
+                                          {% if journey.status.name == "Ouverte" %}
+                                            <a class="dropdown-item" href="{{ path('journey_quit', {'id': journey.id}) }}">
+                                                Se désister
+                                            </a>
+                                        {% endif %}
+                                      {% else %}
+                                          {% if journey.user.username != user.username %}
+                                              {% if journey.status.name == "Ouverte" %}
+                                                    {% if loop.length < journey.nbInscriptionMax %}
+                                                        <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
+                                                            S'inscrire
+                                                        </a>
+                                                      {% endif %}
+                                              {% endif %}
+                                          {% endif %}
+                                      {% endif %}
+                                  {% endfor %}
+
+
 
                                   {% if user.username == journey.user.username %}
                                       {% if journey.status.name == "Créée" %}
@@ -220,7 +252,17 @@
                                           {% endif %}
                                   {% endif %}
 
-
+                                  {% if user.username == journey.user.username %}
+                                      {% if journey.status.name == "Créée" %}
+                                          <a class="dropdown-item" href="{{ path('journey_cancel', {'id': journey.id}) }}">
+                                              Annuler
+                                          </a>
+                                      {% elseif journey.status.name == "Ouverte" %}
+                                          <a class="dropdown-item" href="{{ path('journey_cancel', {'id': journey.id}) }}">
+                                              Annuler
+                                          </a>
+                                      {% endif %}
+                                  {% endif %}
 
                               </div>
                             </span>

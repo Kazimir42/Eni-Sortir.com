@@ -26,11 +26,18 @@ class JourneysRepository extends ServiceEntityRepository
     }
 
     public function findSearch(SearchData $searchData){
+
+        $now = new \DateTime();
+        $now->modify('-30 days');
+
+
         $query = $this
             ->createQueryBuilder('journeys')
             ->select('college', 'journeys', 'user')
             ->join('journeys.college', 'college')
-            ->join('journeys.user', 'user');
+            ->join('journeys.user', 'user')
+            ->andWhere('journeys.startingDate >= :now') //get journeys in last 30 days
+            ->setParameter('now', $now);
 
 
         if (!empty($searchData->getCollege())){
@@ -89,6 +96,38 @@ class JourneysRepository extends ServiceEntityRepository
             ->getQuery()
             ->getResult();
 
+
+        return $query;
+    }
+
+
+
+    public function findAllInCourseJourneys(){
+
+        $now = new \DateTime();
+
+        $query = $this
+            ->createQueryBuilder('j')
+            ->where('j.startingDate <= :now')
+            ->setParameter('now', $now)
+            ->getQuery()
+            ->getResult();
+
+        return $query;
+    }
+
+
+    public function findAllInLast30Days(){
+
+        $now = new \DateTime();
+        $now->modify('+30 days');
+
+        $query = $this
+            ->createQueryBuilder('j')
+            ->where('j.startingDate <= :now')
+            ->setParameter('now', $now)
+            ->getQuery()
+            ->getResult();
 
         return $query;
     }

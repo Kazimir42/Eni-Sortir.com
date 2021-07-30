@@ -60,6 +60,19 @@
 
                 <br />
 
+                {{ form_widget(form.save, {'attr' : {
+                    'class': 'btn btn-primary'
+                }}) }}
+
+                {{ form_widget(form.publish, {'attr' : {
+                    'class': 'btn btn-primary'
+                }}) }}
+
+                {{ form_widget(form.delete, {'attr' : {
+                    'class': 'btn btn-primary'
+                }}) }}
+
+
                 <a href="{{ path('main') }}"><button type="button" class="btn">Cancel</button></a>
 
                 {{ form_end(form) }}

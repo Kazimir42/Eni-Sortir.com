@@ -79,6 +79,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $Owner;
 
+    /**
+     * @ORM\Column(type="string", length=255, nullable=true)
+     */
+    private $avatar;
+
     public function __construct()
     {
         $this->registered = new ArrayCollection();
@@ -237,6 +242,18 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function setCollege(?College $college): self
     {
         $this->college = $college;
+
+        return $this;
+    }
+
+    public function getAvatar()
+    {
+        return $this->avatar;
+    }
+
+    public function setAvatar($avatar)
+    {
+        $this->avatar = $avatar;
 
         return $this;
     }

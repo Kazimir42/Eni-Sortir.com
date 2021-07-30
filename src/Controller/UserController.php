@@ -4,12 +4,16 @@ namespace App\Controller;
 
 use App\Form\ChangePasswordFormType;
 use App\Form\UserType;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class UserController extends AbstractController
 {
@@ -24,7 +28,7 @@ class UserController extends AbstractController
     /**
      * @Route("/profile/update", name="profile_update")
      */
-    public function update(Request $request, EntityManagerInterface $entityManager): Response
+    public function update(Request $request, EntityManagerInterface $entityManager, SluggerInterface $slugger): Response
     {
         $user = $this->getUser();
 
@@ -33,6 +37,24 @@ class UserController extends AbstractController
         $userForm->handleRequest($request);
 
         if ($userForm->isSubmitted() && $userForm->isValid()){
+            /** @var UploadedFile $avatar */
+            $avatar = $userForm->get('avatar')->getData();
+
+            if ($avatar) {
+                $originalFileName = pathinfo($avatar->getClientOriginalName(), PATHINFO_FILENAME);
+                $safeFileName = $slugger->slug($originalFileName);
+                $newFileName = $safeFileName.'-'.uniqid().'.'.$avatar->guessExtension();
+
+                try {
+                    $avatar->move(
+                        $this->getParameter('pictures_directory'),
+                        $newFileName
+                    );
+                } catch (FileException $e) {
+                    throw new FileException('Erreur lors du téléchargement de l\'image');
+                }
+                $user->setAvatar($newFileName);
+            }
             $entityManager->persist($user);
             $entityManager->flush();
 
@@ -81,5 +103,22 @@ class UserController extends AbstractController
             'form' => $form->createView(),
 
         ));
+    }
+
+
+    /**
+     * @Route("/profil/{username}", name="profile_details_user")
+     */
+    public function details(string $username, UserRepository $userRepository): Response
+    {
+        $user = $userRepository->findOneBy(['username' => $username]);
+
+        if (!$user){
+            throw $this->createNotFoundException('Cet utilisateur est inexistant.');
+        }
+
+        return $this->render('user/details.html.twig', [
+            "user" => $user
+        ]);
     }
 }

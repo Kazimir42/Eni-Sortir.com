@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Journeys;
 use App\Entity\Status;
+use App\Form\CancelJourneyType;
 use App\Form\EditJourneyType;
 use App\Form\JourneyCreationType;
 use App\Form\QuitJourneyType;
@@ -58,28 +59,46 @@ class JourneyController extends AbstractController
         $user = $this->getUser();
         $journey = $journeysRepository->find($id);
 
-        $form = $this->createForm(RegisterJourneyType::class, $journey);
-        $form->handleRequest($request);
+        $now = new \DateTime();
 
-
-        if ($form->isSubmitted()) {
-
-            $journey->addUser($user);
-
-            $entityManager->persist($journey);
-            $entityManager->flush();
-
-
-            $this->addFlash('success', 'vous etes bien inscrit');
+        if($now > $journey->getDeadlineDate()){//check date
+            $this->addFlash('danger', 'Date dépassé');
             return $this->redirectToRoute('main');
+        }else{
+
+            if ($journey->getNbInscriptionMax() <= $journey->getUsers()->count()){//check max users
+
+                $this->addFlash('danger', 'Nombre maximum d\'insciption atteint');
+                return $this->redirectToRoute('main');
+
+            }else{
+
+
+                $form = $this->createForm(RegisterJourneyType::class, $journey);
+                $form->handleRequest($request);
+
+
+                if ($form->isSubmitted()) {
+
+                    $journey->addUser($user);
+
+                    $entityManager->persist($journey);
+                    $entityManager->flush();
+
+
+                    $this->addFlash('success', 'vous etes bien inscrit');
+                    return $this->redirectToRoute('main');
+                }
+
+                return $this->render('journey/register.html.twig', [
+                    'journey' => $journey,
+                    'form' => $form->createView(),
+                ]);
+            }
+
+
         }
 
-
-
-        return $this->render('journey/register.html.twig', [
-            'journey' => $journey,
-            'form' => $form->createView(),
-        ]);
     }
 
 
@@ -91,27 +110,41 @@ class JourneyController extends AbstractController
         $user = $this->getUser();
         $journey = $journeysRepository->find($id);
 
-        $form = $this->createForm(QuitJourneyType::class, $journey);
-        $form->handleRequest($request);
+        foreach($journey->getUsers() as $journey_user){
+            if ($journey_user->getId() == $user->getId()){
+                if ($journey->getStatus()->getName() == "Ouverte"){
+
+                    $form = $this->createForm(QuitJourneyType::class, $journey);
+                    $form->handleRequest($request);
 
 
-        if ($form->isSubmitted()) {
+                    if ($form->isSubmitted()) {
 
-            $journey->removeUser($user);
+                        $journey->removeUser($user);
 
-            $entityManager->persist($journey);
-            $entityManager->flush();
+                        $entityManager->persist($journey);
+                        $entityManager->flush();
 
-            $this->addFlash('success', 'vous vous êtes bien désisté');
-            return $this->redirectToRoute('main');
+                        $this->addFlash('success', 'vous vous êtes bien désisté');
+                        return $this->redirectToRoute('main');
+                    }
+
+
+
+                    return $this->render('journey/quit.html.twig', [
+                        'journey' => $journey,
+                        'form' => $form->createView(),
+                    ]);
+                }else{
+                    $this->addFlash('danger', 'Il erst trop tard pour se désister');
+                    return $this->redirectToRoute('main');
+                }
+            }else{
+                $this->addFlash('danger', 'Vous n\'êtes pas inscrit à  cette sortie ou êtes l\'oganisateur');
+                return $this->redirectToRoute('main');
+            }
         }
 
-
-
-        return $this->render('journey/quit.html.twig', [
-            'journey' => $journey,
-            'form' => $form->createView(),
-        ]);
     }
 
 
@@ -155,7 +188,7 @@ class JourneyController extends AbstractController
             $entityManager->persist($journey);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Sortie crée !');
+            $this->addFlash('success', 'Sortie créée !');
             return $this->redirectToRoute('main');
         }
 
@@ -170,18 +203,118 @@ class JourneyController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit")
      */
-    public function edit(int $id, Request $request, JourneysRepository $journeysRepository){
+    public function edit(int $id, Request $request, JourneysRepository $journeysRepository, StatusRepository $statusRepository, EntityManagerInterface $entityManager){
 
         $user = $this->getUser();
         $journey = $journeysRepository->find($id);
 
-        $form = $this->createForm(EditJourneyType::class, $journey);
-        $form->handleRequest($request);
+
+        if ($user->getUsername() == $journey->getUser()->getUsername()){
+
+            if ($journey->getStatus()->getName() == "Créée"){
+                $form = $this->createForm(EditJourneyType::class, $journey);
+                $form->handleRequest($request);
+
+                if ($form->isSubmitted()){
 
 
-        return $this->render('journey/edit.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
-        ]);
+                    //save
+                    if($form->get('save')->isClicked() && $form->isValid()){
+
+                        $status = $statusRepository->findOneBy(array('name' => "Créée"));
+                        $journey->setStatus($status);
+                        $entityManager->persist($journey);
+                        $entityManager->flush();
+
+                        $this->addFlash('success', 'Modifications enregistrées !');
+                        return $this->redirectToRoute('main');
+
+                    }elseif($form->get('publish')->isClicked() && $form->isValid()){//publish
+
+                        $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+                        $journey->setStatus($status);
+                        $entityManager->persist($journey);
+                        $entityManager->flush();
+
+                        $this->addFlash('success', 'Modifications enregistrées et Sortie publié !');
+                        return $this->redirectToRoute('main');
+
+                    }elseif($form->get('delete')->isClicked()){//delete
+
+                        $entityManager->remove($journey);
+                        $entityManager->flush();
+
+                        $this->addFlash('danger', 'Sortie supprimé !');
+                        return $this->redirectToRoute('main');
+                    }
+
+                }
+
+                return $this->render('journey/edit.html.twig', [
+                    'form' => $form->createView(),
+                    'user' => $user,
+                ]);
+
+            }else{
+                $this->addFlash('danger', 'Vous ne pouvez pas modifier cette sortie');
+                return $this->redirectToRoute('main');
+            }
+
+        }else{
+            $this->addFlash('danger', 'Vous n\'êtes pas le créateur de cette sortie');
+            return $this->redirectToRoute('main');
+        }
+
     }
+
+
+
+    /**
+     * @Route("/{id}/cancel", name="cancel")
+     */
+    public function cancel(int $id, Request $request, JourneysRepository $journeysRepository, StatusRepository $statusRepository, EntityManagerInterface $entityManager){
+
+        $user = $this->getUser();
+        $journey = $journeysRepository->find($id);
+
+
+        if ($user->getUsername() == $journey->getUser()->getUsername()){
+
+            if ($journey->getStatus()->getName() == "Créée" || $journey->getStatus()->getName() == "Ouverte"){
+                $journey->setDescription('');
+
+                $form = $this->createForm(CancelJourneyType::class, $journey);
+                $form->handleRequest($request);
+
+
+                if ($form->isSubmitted() && $form->isValid()){
+                    $status = $statusRepository->findOneBy(array('name' => "Annulée"));
+                    $journey->setStatus($status);
+                    $entityManager->persist($journey);
+                    $entityManager->flush();
+
+                }
+
+                return $this->render('journey/cancel.html.twig', [
+                    'journey' => $journey,
+                    'form' => $form->createView()
+                ]);
+            }else{
+                $this->addFlash('danger', 'Vous ne pouvez pas annuler cette sortie');
+                return $this->redirectToRoute('main');
+            }
+
+        }else{
+            $this->addFlash('danger', 'Vous n\'êtes pas le créateur de cette sortie');
+            return $this->redirectToRoute('main');
+        }
+
+
+
+
+
+    }
+
+
+
 }

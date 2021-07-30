@@ -1,13 +1,57 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Register{% endblock %}
+{% block title %}
+    {{ parent() }} | Enregistrer
+{% endblock %}
 
 {% block body %}
-    <h1>Register</h1>
 
     {{ form_start(registrationForm) }}
-        {{ form_widget(registrationForm) }}
 
-        <button type="submit" class="btn">Register</button>
-    {{ form_end(registrationForm) }}
+    <div class="container-tight py-4">
+        <div class="text-center mb-4">
+            <a href="."><img src="{{ asset('images/.png') }}" height="36" alt=""></a>
+        </div>
+        <div class="card card-md">
+            <div class="card-body">
+                <h2 class="card-title text-center mb-4">Enregistrer un utilisateur</h2>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.username)}}
+                    {{ form_widget(registrationForm.username) }}
+                </div>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.lastname)}}
+                    {{ form_widget(registrationForm.lastname) }}
+                </div>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.firstname)}}
+                    {{ form_widget(registrationForm.firstname) }}
+                </div>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.phone)}}
+                    {{ form_widget(registrationForm.phone) }}
+                </div>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.mail)}}
+                    {{ form_widget(registrationForm.mail) }}
+                </div>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.college)}}
+                    {{ form_widget(registrationForm.college) }}
+                </div>
+                <div class="mb-2">
+                    {{ form_label(registrationForm.plainPassword)}}
+                    {{ form_widget(registrationForm.plainPassword) }}
+                </div>
+
+
+            </div>
+
+            <div class="form-footer">
+                <button type="submit" class="btn btn-primary w-100">Enregistrer</button>
+            </div>
+        </div>
+
+        {{ form_end(registrationForm) }}
+    </div>
 {% endblock %}
