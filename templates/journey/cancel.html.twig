@@ -13,27 +13,23 @@
         </div>
         <div class="card-body">
 
-            <div class="card-body">
+            <p><span class="font-weight-bold">Nom de la sortie : </span>{{journey.name }}</p>
+            <p><span class="font-weight-bold">Date et heure de la sortie : </span>{{journey.startingDate|date('d/m/y H:i') }}</p>
+            <p><span class="font-weight-bold">Campus : </span>{{journey.college.name}}</p>
+            <p><span class="font-weight-bold">Lieu : </span>{{journey.place.name}} | {{journey.place.street}}, {{journey.place.city.postal}} {{journey.place.city.name}} </p>
 
-                <p><span class="font-weight-bold">Nom de la sortie : </span>{{journey.name }}</p>
-                <p><span class="font-weight-bold">Date et heure de la sortie : </span>{{journey.startingDate|date('d/m/y H:i') }}</p>
-                <p><span class="font-weight-bold">Campus : </span>{{journey.college.name}}</p>
-                <p><span class="font-weight-bold">Lieu : </span>{{journey.place.name}} | {{journey.place.street}}, {{journey.place.city.postal}} {{journey.place.city.name}} </p>
+            {{ form_start(form) }}
 
+            <span class="font-weight-bold">{{ form_label(form.description) }}</span>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
 
-                {{ form_start(form) }}
+            <br />
 
-                <span class="font-weight-bold">{{ form_label(form.description) }}</span>
-                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+            <button class="btn btn-primary">Annuler la sortie</button>
+            <a href="{{ path('main') }}"><button type="button" class="btn">Annuler</button></a>
 
-                <br />
+            {{ form_end(form) }}
 
-                <button class="btn btn-primary">Annuler la sortie</button>
-                <a href="{{ path('main') }}"><button type="button" class="btn">Annuler</button></a>
-
-                {{ form_end(form) }}
-
-        </div>
     </div>
 </div>
 

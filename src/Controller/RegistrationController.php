@@ -30,6 +30,8 @@ class RegistrationController extends AbstractController
                 )
             );
             $user->setIsActive(true);
+            $user->setAvatar('default.png');
+
 
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($user);

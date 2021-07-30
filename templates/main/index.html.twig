@@ -188,14 +188,27 @@
                             {% endfor %}
                         </td>
                         <td>
-                            {% if journey.user.username != app.user.username %}
 
-                                <a href="{{ path('profile_details_user', {'username' : journey.user.username}) }}">
-                                    {{ journey.user.username }}</a>
+                            {% if journey.user.username != app.user.username %}
+                                <div class="d-flex py-1 align-items-center">
+                                    <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ journey.user.avatar) }})"></span>
+                                    <div class="flex-fill">
+                                        <div class="font-weight-medium">
+                                            <a href="{{ path('profile_details_user', {'username' : journey.user.username}) }}">
+                                                {{ journey.user.username }}
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
 
                             {% else %}
-
-                                {{ journey.user.username }}
+                                <div class="d-flex py-1 align-items-center">
+                                    <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ journey.user.avatar) }})"></span>
+                                    <div class="flex-fill">
+                                        <div class="font-weight-medium">{{ journey.user.username }}</div>
+                                    </div>
+                                </div>
 
                             {% endif %}
                         </td>

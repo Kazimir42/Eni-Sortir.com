@@ -5,41 +5,24 @@
 {% endblock %}
 
 {% block body %}
-    <div class="container-tight py-4">
-        <div class="text-center mb-4">
-            <a href="."><img src="{{ asset('images/.png') }}" height="36" alt=""></a>
-        </div>
-        <div class="card card-md">
-            <div class="card-body">
-                <h2 class="card-title text-center mb-4">Profil de l'utilisateur</h2>
-                <div class="mb-2">
-                    Pseudo : {{ user.username }}
-                </div>
-                {% if user.avatar %}
-                    <div class="mb-2">
-                        <img src="{{ asset('avatars/' ~ user.avatar) }}" alt="{{ user.username }}">
-                    </div>
-                {% endif %}
-                <div class="mb-2">
-                    Nom : {{ user.lastname }}
-                </div>
-                <div class="mb-2">
-                    Prénom : {{ user.firstname }}
-                </div>
-                <div class="mb-2">
-                    Téléphone : +33{{ user.phone }}
-                </div>
-                <div class="mb-2">
-                    Email : {{ user.mail}}
-                </div>
-                <div class="mb-2">
-                    Campus : {{ user.college.name }}
-                </div>
 
+
+    <div class="container-tight text-center">
+        <div class="card">
+            <div class="card-body text-center">
+                <span class="avatar avatar-xl mb-3 avatar-rounded" style="background-image: url({{ asset('avatars/' ~ user.avatar) }})"></span>
+                <h3 class="m-0 mb-1">{{ user.username }}</h3>
+                <div class="text-muted">{{ user.firstname }} {{ user.lastname }}</div>
+                <br />
+                <div class="text-muted">{{ user.phone }}</div>
+                <div class="text-muted">{{ user.mail}}</div>
+                <div class="text-muted">{{ user.college.name }}</div>
+
+                <br />
 
             </div>
         </div>
     </div>
-    </div>
+
 
 {% endblock %}
