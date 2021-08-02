@@ -11,7 +11,20 @@
                     <img src="{{ asset('images/logo_large.png') }}" width="110" height="32" alt="Sortir.com" class="navbar-brand-image">
                 </a>
             </h1>
-
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link d-flex lh-1 text-reset p-0" data-bs-toggle="dropdown" aria-label="Open user menu">
+                        <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ app.user.avatar) }})"></span>
+                        <div class="d-none d-xl-block ps-2">
+                            <div>{{ app.user.username }}</div>
+                        </div>
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-end dropdown-menu-arrow">
+                        <a href="{{ path('profile_details') }}" class="dropdown-item">Profil</a>
+                        <div class="dropdown-divider"></div>
+                        <a href="{{ path('app_logout') }}" class="dropdown-item">Déconnexion</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </header>
 {% endif %}
