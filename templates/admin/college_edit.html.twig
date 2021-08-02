@@ -1,0 +1,33 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Modifier un campus{% endblock %}
+
+{% block body %}
+
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Modifier un campus</h3>
+            </div>
+            <div class="card-body">
+
+                {{ form_start(form) }}
+
+
+                {{ form_label(form.name) }}
+                {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                <button class="btn btn-primary">Modifier</button>
+                <a href="{{ path('main') }}"><button type="button" class="btn">Cancel</button></a>
+
+
+                {{ form_end(form) }}
+
+
+            </div>
+        </div>
+    </div>
+{% endblock %}

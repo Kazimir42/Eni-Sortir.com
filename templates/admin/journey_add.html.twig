@@ -1,0 +1,81 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Modifier la sortie{% endblock %}
+
+{% block body %}
+
+
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Modifier la sortie</h3>
+        </div>
+        <div class="card-body">
+
+                {{ form_start(form) }}
+
+                {{ form_label(form.name) }}
+                <div>
+                    {{ form_widget(form.name, {'attr': {'class': 'form-control'}}) }}
+                </div>
+
+                <br />
+
+                {{ form_label(form.startingDate) }}
+                {{ form_widget(form.startingDate, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.deadlineDate) }}
+                {{ form_widget(form.deadlineDate, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.nbInscriptionMax) }}
+                {{ form_widget(form.nbInscriptionMax, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.duration) }}
+                {{ form_widget(form.duration, {'attr': {'class': 'form-control', 'type': 'number'}}) }}
+
+                <br />
+
+                {{ form_label(form.description) }}
+                {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+
+                <br />
+
+                {{ form_label(form.place) }}
+                {{ form_widget(form.place, {'attr' : {
+                    'class': 'form-select'
+                }}) }}
+
+                <br />
+
+                {{ form_label(form.user) }}
+                {{ form_widget(form.user, {'attr' : {
+                    'class': 'form-select'
+                }}) }}
+
+                <br />
+
+                {{ form_widget(form.publish, {'attr' : {
+                    'class': 'btn btn-primary'
+                }}) }}
+
+                {{ form_widget(form.save, {'attr' : {
+                    'class': 'btn btn-primary'
+                }}) }}
+
+            <a href="{{ path('main') }}"><button type="button" class="btn">Cancel</button></a>
+
+                {{ form_end(form) }}
+
+    </div>
+</div>
+
+
+
+{% endblock %}

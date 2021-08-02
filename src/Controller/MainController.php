@@ -19,7 +19,7 @@ class MainController extends AbstractController
      */
     public function index(JourneysRepository $journeysRepository, CollegeRepository $collegeRepository, Request $request, UpdateJourneys $updateJourneys): Response
     {
-        //CHANGE TO COMMAND WHEN DATETIME STOP BUGGING
+        //CHANGE TO COMMAND WHEN DATETIME STOP WTF BUGGING
         $updateJourneys->updateStatusJourney();
 
         $user = $this->getUser();
@@ -29,12 +29,11 @@ class MainController extends AbstractController
         $form = $this->createForm(FilterFormType::class, $data);
         $form->handleRequest($request);
 
-
-
         $journeys = $journeysRepository->findSearch($data);
 
-
-
+        //$time = new \DateTime();
+        //$result = $time->format('Y-m-d H:i:s');
+        //dd($result);
 
         return $this->render('main/index.html.twig', [
             'journeys' => $journeys,

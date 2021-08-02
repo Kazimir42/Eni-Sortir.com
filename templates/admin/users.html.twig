@@ -1,0 +1,114 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Utilisateurs{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Utilisateurs</h3>
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                        <a href="{{ path('admin_register') }}" class="btn btn-primary d-none d-sm-inline-block">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            Ajouter un utilisateur
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive" style="min-height: 200px">
+                <table class="table card-table table-vcenter text-nowrap datatable">
+                    <thead>
+                    <tr>
+                        <th>Pseudo</th>
+                        <th>Nom</th>
+                        <th>Prénom</th>
+                        <th>Téléphone</th>
+                        <th>Email</th>
+                        <th>Campus</th>
+                        <th>Actif</th>
+                        <th></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+
+                    {% for user in users %}
+
+                        {% if user.username != app.user.username %}
+
+                            <tr>
+                                <td>
+
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ user.avatar) }})"></span>
+                                        <div class="flex-fill">
+                                            <div class="font-weight-medium">
+                                                <a href="{{ path('profile_details_user', {'username' : user.username}) }}">
+                                                    {{ user.username }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    {{ user.lastname }}
+                                </td>
+                                <td>
+                                    {{ user.firstname }}
+                                </td>
+                                <td>
+                                    {{ user.phone }}
+                                </td>
+                                <td>
+                                    {{ user.mail }}
+                                </td>
+                                <td>
+                                    {{ user.college.name }}
+                                </td>
+                                <td>
+                                    {% if user.isActive %}
+                                        Oui
+                                    {% else %}
+                                        Non
+                                    {% endif %}
+                                </td>
+                                <td class="text-end">
+                            <span class="dropdown">
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <div class="dropdown-menu dropdown-menu-end">
+
+                                  {% if user.isActive %}
+
+                                      <a class="dropdown-item" href="{{ path('admin_disable', {'username': user.username}) }}">
+                                          Désactiver
+                                      </a>
+
+                                  {% else %}
+
+                                      <a class="dropdown-item" href="{{ path('admin_enable', {'username': user.username}) }}">
+                                          Activer
+                                      </a>
+
+                                  {% endif %}
+
+                                      <a class="dropdown-item" href="{{ path('admin_delete', {'username': user.username}) }}">
+                                          Supprimer
+                                      </a>
+
+                              </div>
+                            </span>
+                                </td>
+                            </tr>
+
+                        {% endif %}
+                    {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+{% endblock %}

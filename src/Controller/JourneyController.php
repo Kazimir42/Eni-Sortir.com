@@ -77,8 +77,7 @@ class JourneyController extends AbstractController
                 $form = $this->createForm(RegisterJourneyType::class, $journey);
                 $form->handleRequest($request);
 
-
-                if ($form->isSubmitted()) {
+                if ($form->isSubmitted() && $user->getIsActive()) {
 
                     $journey->addUser($user);
 
@@ -88,6 +87,9 @@ class JourneyController extends AbstractController
 
                     $this->addFlash('success', 'vous etes bien inscrit');
                     return $this->redirectToRoute('main');
+                }
+                elseif (!$user->getIsActive()) {
+                    $this->addFlash('warning', 'Vous n\'avez pas l\'autorisation de vous inscrire.');
                 }
 
                 return $this->render('journey/register.html.twig', [
@@ -170,7 +172,7 @@ class JourneyController extends AbstractController
 
 
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid() && $user->getIsActive()) {
 
             $journey->setCollege($user->getCollege());
             $journey->setUser($user);
@@ -190,6 +192,10 @@ class JourneyController extends AbstractController
 
             $this->addFlash('success', 'Sortie créée !');
             return $this->redirectToRoute('main');
+        }
+
+        elseif (!$user->getIsActive()) {
+            $this->addFlash('warning', 'Vous n\'avez pas l\'autorisation de créer une sortie');
         }
 
 
