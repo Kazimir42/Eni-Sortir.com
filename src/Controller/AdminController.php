@@ -15,6 +15,8 @@ use App\Form\EditCityType;
 use App\Form\EditCollegeType;
 use App\Form\EditJourneyAdminType;
 use App\Form\EditPlaceType;
+use App\Form\RegistrationFormType;
+use App\Form\UploadCSVType;
 use App\Repository\CityRepository;
 use App\Repository\CollegeRepository;
 use App\Repository\JourneysRepository;
@@ -24,9 +26,16 @@ use App\Repository\UserRepository;
 use App\Service\UpdateJourneys;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\CsvEncoder;
+use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
+use Symfony\Component\Serializer\Serializer;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 class AdminController extends AbstractController
 {
@@ -94,6 +103,88 @@ class AdminController extends AbstractController
         $entityManager->flush();
 
         return $this->redirectToRoute('admin_users');
+    }
+
+    /**
+     * @Route("admin/add_csv", name="admin_add_csv")
+     */
+    public function addCSV(Request $request, UserPasswordHasherInterface $passwordEncoder, SluggerInterface $slugger, CollegeRepository $collegeRepository, EntityManagerInterface $entityManager): Response
+    {
+        $form = $this->createForm( UploadCSVType::class);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+
+            $file = $form->get('file')->getData();
+
+            if ($file) {
+
+                $fileExtension = 'csv';
+
+                $normalizers = [new ObjectNormalizer()];
+
+                $encoders = [
+                    new CsvEncoder()
+                ];
+
+                $serializer = new Serializer($normalizers, $encoders);
+
+                $fileString = file_get_contents($file);
+
+                $data = $serializer->decode($fileString, $fileExtension);
+
+                foreach ($data as $item){
+
+
+                    try {
+
+                        $theCollege = $collegeRepository->findOneBy(array("id" => $item["college_id"]));
+
+                        if ($item["roles"] == "admin") {
+                            $roleArray = ["ROLE_ADMIN"];
+                        } else {
+                            $roleArray = [];
+                        }
+
+                        $user = new User();
+
+                        $user->setCollege($theCollege);
+                        $user->setUsername($item["username"]);
+                        $user->setRoles($roleArray);
+                        $user->setPassword(
+                            $passwordEncoder->hashPassword(
+                                $user,
+                                $item["password"]
+                            ));
+                        $user->setLastname($item["lastname"]);
+                        $user->setFirstname($item["firstname"]);
+                        $user->setPhone($item["phone"]);
+                        $user->setMail($item["mail"]);
+                        $user->setIsActive($item["is_active"]);
+                        $user->setAvatar($item["avatar"]);
+
+                        $entityManager->persist($user);
+                        $entityManager->flush();
+                    }catch (\Exception $e){
+                        $this->addFlash('danger', 'Erreur lors de l\'import des utilisateurs');
+                        return $this->redirectToRoute('admin');
+                    }
+
+                }
+
+
+            }else{
+                $this->addFlash('danger', 'Erreur lors de l\'ajout du fichier');
+                return $this->redirectToRoute('admin');
+            }
+
+            $this->addFlash('success', 'Utilisateurs ajoutés !');
+            return $this->redirectToRoute('admin');
+        }
+
+        return $this->render('admin/add_csv.html.twig', [
+            'form' => $form->createView(),
+        ]);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////

@@ -7,6 +7,7 @@ use App\Form\FilterFormType;
 use App\Repository\CollegeRepository;
 use App\Repository\JourneysRepository;
 use App\Service\UpdateJourneys;
+use Mobile_Detect;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -19,6 +20,9 @@ class MainController extends AbstractController
      */
     public function index(JourneysRepository $journeysRepository, CollegeRepository $collegeRepository, Request $request, UpdateJourneys $updateJourneys): Response
     {
+        $detect = new Mobile_Detect;
+        $isMobile = $detect->isMobile();
+
         //CHANGE TO COMMAND WHEN DATETIME STOP WTF BUGGING
         $updateJourneys->updateStatusJourney();
 
@@ -29,6 +33,7 @@ class MainController extends AbstractController
         $form = $this->createForm(FilterFormType::class, $data);
         $form->handleRequest($request);
 
+        //OPTIMIZE THIS PLZ LOTS OF REQUEST -_-
         $journeys = $journeysRepository->findSearch($data);
 
         //$time = new \DateTime();
@@ -39,6 +44,7 @@ class MainController extends AbstractController
             'journeys' => $journeys,
             'form' => $form->createView(),
             'user' => $user,
+            'mobile' => $isMobile,
         ]);
     }
 }

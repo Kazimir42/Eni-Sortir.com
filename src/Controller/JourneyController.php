@@ -15,6 +15,7 @@ use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityManagerInterface;
+use Mobile_Detect;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -157,52 +158,65 @@ class JourneyController extends AbstractController
      */
     public function create(Request $request, CityRepository $cityRepository, PlaceRepository $placeRepository, SerializerInterface $serializer, EntityManagerInterface $entityManager, StatusRepository $statusRepository): Response
     {
-        $user = $this->getUser();
-        $citys = $cityRepository->findAllArray();
-        $places = $placeRepository->findAllArray();
+
+        $detect = new Mobile_Detect;
+        $isMobile = $detect->isMobile();
+
+        if ($isMobile){
+
+            return $this->redirectToRoute('main');
+
+        }else{
+
+            $user = $this->getUser();
+            $citys = $cityRepository->findAllArray();
+            $places = $placeRepository->findAllArray();
 
 
-        $journey = new Journeys();
-        $form = $this->createForm(JourneyCreationType::class, $journey);
-        $form->handleRequest($request);
+            $journey = new Journeys();
+            $form = $this->createForm(JourneyCreationType::class, $journey);
+            $form->handleRequest($request);
 
 
-        $jsonCitys = $serializer->serialize($citys, 'json');
-        $jsonPlaces = $serializer->serialize($places, 'json');
+            $jsonCitys = $serializer->serialize($citys, 'json');
+            $jsonPlaces = $serializer->serialize($places, 'json');
 
 
 
-        if ($form->isSubmitted() && $form->isValid() && $user->getIsActive()) {
+            if ($form->isSubmitted() && $form->isValid() && $user->getIsActive()) {
 
-            $journey->setCollege($user->getCollege());
-            $journey->setUser($user);
+                $journey->setCollege($user->getCollege());
+                $journey->setUser($user);
 
-            //save
-            if($form->get('save')->isClicked()){
-                $status = $statusRepository->findOneBy(array('name' => "Créée"));
-            }else{//publish
-                $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+                //save
+                if($form->get('save')->isClicked()){
+                    $status = $statusRepository->findOneBy(array('name' => "Créée"));
+                }else{//publish
+                    $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+                }
+
+                $journey->setStatus($status);
+
+
+                $entityManager->persist($journey);
+                $entityManager->flush();
+
+                $this->addFlash('success', 'Sortie créée !');
+                return $this->redirectToRoute('main');
             }
 
-            $journey->setStatus($status);
+            elseif (!$user->getIsActive()) {
+                $this->addFlash('warning', 'Vous n\'avez pas l\'autorisation de créer une sortie');
+            }
 
 
-            $entityManager->persist($journey);
-            $entityManager->flush();
+            return $this->render('journey/create.html.twig', [
+                'form' => $form->createView(),
+                'user' => $user,
+            ]);
 
-            $this->addFlash('success', 'Sortie créée !');
-            return $this->redirectToRoute('main');
         }
 
-        elseif (!$user->getIsActive()) {
-            $this->addFlash('warning', 'Vous n\'avez pas l\'autorisation de créer une sortie');
-        }
-
-
-        return $this->render('journey/create.html.twig', [
-            'form' => $form->createView(),
-            'user' => $user,
-        ]);
     }
 
 
