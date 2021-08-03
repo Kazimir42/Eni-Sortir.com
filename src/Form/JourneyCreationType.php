@@ -6,6 +6,7 @@ use App\Entity\City;
 use App\Entity\College;
 use App\Entity\Journeys;
 use App\Entity\Place;
+use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\DateType;
 use Symfony\Component\Form\Extension\Core\Type\IntegerType;
@@ -67,6 +68,7 @@ class JourneyCreationType extends AbstractType
     {
         $resolver->setDefaults([
             'data_class' => Journeys::class,
+            'allow_add' => true,
         ]);
     }
 }

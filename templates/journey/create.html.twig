@@ -51,10 +51,27 @@
 
             <br /><br />
 
+            <label for="city" class="required">Ville : </label>
+            <select id="city" oninput="getCity(this)" class="form-select">
+                <option value="NULL">Sélectionnez une ville</option>
+                {% for city in citys %}
+                    <option value="{{ city.id }}">{{ city.name }}</option>
+                {% endfor %}
+            </select>
+
+            <br />
+
             {{ form_label(form.place) }}
             {{ form_widget(form.place, {'attr' : {
-                'class': 'form-select'
+                'class': 'form-select',
+                'oninput': 'getPlaceInfo(this)',
             }}) }}
+
+            <br />
+
+            <div id="placeInfo">
+
+            </div>
 
             <br />
 
@@ -74,8 +91,12 @@
 
 
 
+            <script src="{{ asset("js/call.js") }}"></script>
 
-
+            <script>
+                let placeSelect = document.getElementById('journey_creation_place');
+                placeSelect.innerHTML = '<option value="NULL">Sélectionnez un lieu</option>'
+            </script>
 
 
 

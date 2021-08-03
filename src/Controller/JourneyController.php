@@ -161,7 +161,7 @@ class JourneyController extends AbstractController
 
         $detect = new Mobile_Detect;
         $isMobile = $detect->isMobile();
-
+        $isMobile = false;
         if ($isMobile){
 
             return $this->redirectToRoute('main');
@@ -169,7 +169,8 @@ class JourneyController extends AbstractController
         }else{
 
             $user = $this->getUser();
-            $citys = $cityRepository->findAllArray();
+            $citysArray = $cityRepository->findAllArray();
+            $citys = $cityRepository->findAll();
             $places = $placeRepository->findAllArray();
 
 
@@ -178,8 +179,8 @@ class JourneyController extends AbstractController
             $form->handleRequest($request);
 
 
-            $jsonCitys = $serializer->serialize($citys, 'json');
-            $jsonPlaces = $serializer->serialize($places, 'json');
+            //$jsonCitys = $serializer->serialize($citys, 'json');
+            //$jsonPlaces = $serializer->serialize($places, 'json');
 
 
 
@@ -213,6 +214,7 @@ class JourneyController extends AbstractController
             return $this->render('journey/create.html.twig', [
                 'form' => $form->createView(),
                 'user' => $user,
+                'citys' => $citys
             ]);
 
         }
@@ -223,10 +225,11 @@ class JourneyController extends AbstractController
     /**
      * @Route("/{id}/edit", name="edit")
      */
-    public function edit(int $id, Request $request, JourneysRepository $journeysRepository, StatusRepository $statusRepository, EntityManagerInterface $entityManager){
+    public function edit(int $id, Request $request, JourneysRepository $journeysRepository, StatusRepository $statusRepository, EntityManagerInterface $entityManager, CityRepository $cityRepository){
 
         $user = $this->getUser();
         $journey = $journeysRepository->find($id);
+        $citys = $cityRepository->findAll();
 
 
         if ($user->getUsername() == $journey->getUser()->getUsername()){
@@ -273,6 +276,8 @@ class JourneyController extends AbstractController
                 return $this->render('journey/edit.html.twig', [
                     'form' => $form->createView(),
                     'user' => $user,
+                    'journey' => $journey,
+                    'citys' => $citys,
                 ]);
 
             }else{

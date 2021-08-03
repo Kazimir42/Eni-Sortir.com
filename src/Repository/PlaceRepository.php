@@ -26,4 +26,24 @@ class PlaceRepository extends ServiceEntityRepository
             ->select('p');
         return $query->getQuery()->getArrayResult();
     }
+
+    public function findAllByIdArray($id)
+    {
+        $query = $this
+            ->createQueryBuilder('p')
+            ->select('p')
+            ->andWhere('p.city = :id')
+            ->setParameter('id',$id);
+        return $query->getQuery()->getArrayResult();
+    }
+
+    public function findOneById($id)
+    {
+        $query = $this
+            ->createQueryBuilder('p')
+            ->select('p')
+            ->andWhere('p.id = :id')
+            ->setParameter('id',$id);
+        return $query->getQuery()->getArrayResult();
+    }
 }
