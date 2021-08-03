@@ -1,0 +1,38 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Annuler la sortie{% endblock %}
+
+{% block body %}
+
+
+
+<div class="col-lg-12">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">Annuler la sortie</h3>
+        </div>
+        <div class="card-body">
+
+            <p><span class="font-weight-bold">Nom de la sortie : </span>{{journey.name }}</p>
+            <p><span class="font-weight-bold">Date et heure de la sortie : </span>{{journey.startingDate|date('d/m/y H:i') }}</p>
+            <p><span class="font-weight-bold">Campus : </span>{{journey.college.name}}</p>
+            <p><span class="font-weight-bold">Lieu : </span>{{journey.place.name}} | {{journey.place.street}}, {{journey.place.city.postal}} {{journey.place.city.name}} </p>
+
+            {{ form_start(form) }}
+
+            <span class="font-weight-bold">{{ form_label(form.description) }}</span>
+            {{ form_widget(form.description, {'attr': {'class': 'form-control'}}) }}
+
+            <br />
+
+            <button class="btn btn-primary">Annuler la sortie</button>
+            <a href="{{ path('main') }}"><button type="button" class="btn">Annuler</button></a>
+
+            {{ form_end(form) }}
+
+    </div>
+</div>
+
+
+
+{% endblock %}

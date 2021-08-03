@@ -11,19 +11,7 @@ class DeleteJourneyAdminType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder
-            ->add('name')
-            ->add('startingDate')
-            ->add('duration')
-            ->add('deadlineDate')
-            ->add('nbInscriptionMax')
-            ->add('description')
-            ->add('college')
-            ->add('users')
-            ->add('user')
-            ->add('status')
-            ->add('place')
-        ;
+
     }
 
     public function configureOptions(OptionsResolver $resolver)

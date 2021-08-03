@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\Journeys;
 use App\Entity\Place;
 use App\Form\AddPlaceType;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,14 +32,19 @@ class PlaceController extends AbstractController
         $place = new Place();
         $form = $this->createForm(AddPlaceType::class, $place);
         $form->handleRequest($request);
+        $user = $this->getUser();
 
-        if($form->isSubmitted() && $form->isValid()){
+        if($form->isSubmitted() && $form->isValid() && $user->getIsActive){
 
             $entityManager->persist($place);
             $entityManager->flush();
 
             $this->addFlash('success', 'Lieu crée !');
             return $this->redirectToRoute('main');
+        }
+
+        elseif (!$user->getIsActive()) {
+            $this->addFlash('warning', 'Vous n\'avez pas l\'autorisation d\'ajouter un lieu.');
         }
 
         return $this->render('place/add.html.twig', [

@@ -12,18 +12,22 @@
             </div>
             <div class="card-body">
 
-                <p><span class="font-weight-bold">Lieu : </span>{{place.name}}</p>
-                <p><span class="font-weight-bold">Rue : </span>{{place.street}}</p>
-                <p><span class="font-weight-bold">Ville : </span>{{place.city.name}}</p>
-                <p><span class="font-weight-bold">Code postal : </span>{{place.city.postal}}</p>
-                <p><span class="font-weight-bold">Latitude : </span>{{place.x}}</p>
-                <p><span class="font-weight-bold">Longitude : </span>{{place.y}}</p>
+
+                <p><span class="font-weight-bold">En supprimant ce lieu vous annulerez toutes les sorties qui ne sont pas en cours.</span></p>
+
+                <p><span class="font-weight-bold">Lieu sélectionné : </span>{{place.name}}</p>
+
+                <p><span class="font-weight-bold">Sorties associés :</span><br />
+                {% for journey in place.journey %}
+                    {{ journey.name }},
+                {% endfor %}
+
+
 
                 {{ form_start(form) }}
 
                 <button class="btn btn-primary">Supprimer</button>
                 <a href="{{ path('main') }}"><button type="button" class="btn">Cancel</button></a>
-
 
                 {{ form_end(form) }}
 

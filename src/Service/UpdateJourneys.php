@@ -5,8 +5,10 @@ namespace App\Service;
 
 use App\Entity\Journeys;
 use App\Entity\Status;
+use App\Entity\User;
 use App\Repository\JourneysRepository;
 use App\Repository\StatusRepository;
+use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\Validator\Constraints\Date;
@@ -16,12 +18,14 @@ class UpdateJourneys extends AbstractController{
     private $journeysRepository;
     private $statusRepository;
     private $entityManager;
+    private $userRepository;
 
-    public function __construct(JourneysRepository $journeysRepository, StatusRepository $statusRepository, EntityManagerInterface $entityManager)
+    public function __construct(JourneysRepository $journeysRepository, StatusRepository $statusRepository, EntityManagerInterface $entityManager, UserRepository $userRepository)
     {
         $this->journeysRepository = $journeysRepository;
         $this->statusRepository = $statusRepository;
         $this->entityManager = $entityManager;
+        $this->userRepository = $userRepository;
     }
 
     public function updateEndedRegisterDate(){
@@ -86,5 +90,23 @@ class UpdateJourneys extends AbstractController{
 
     }
 
+    public function updateUserJourney(User $user) {
 
+        $journeys = $user->getOwner();
+        $unknownUser = $this->userRepository->findOneBy(array("username"=>"inconnu"));
+        $cancelled = $this->statusRepository->findOneBy(array("name"=>"Annulée"));
+
+        foreach ($journeys as $journey) {
+            $journey->setUser($unknownUser);
+
+            if($journey->getStatus()->getName() == "Activité en cours" || $journey->getStatus()->getName() == "Passée" || $journey->getStatus()->getName() == "Annulée") {
+
+            } else {
+                $journey->setStatus($cancelled);
+            }
+
+            $this->entityManager->persist($journey);
+            $this->entityManager->flush();
+        }
+    }
 }

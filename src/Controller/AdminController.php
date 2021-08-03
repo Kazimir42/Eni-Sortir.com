@@ -7,6 +7,8 @@ use App\Entity\Journeys;
 use App\Entity\User;
 use App\Form\AddCollegeType;
 use App\Form\AddJourneyAdminType;
+use App\Form\CancelJourneyType;
+use App\Form\DeleteCityType;
 use App\Form\DeleteJourneyAdminType;
 use App\Form\DeletePlaceType;
 use App\Form\EditCityType;
@@ -19,6 +21,7 @@ use App\Repository\JourneysRepository;
 use App\Repository\PlaceRepository;
 use App\Repository\StatusRepository;
 use App\Repository\UserRepository;
+use App\Service\UpdateJourneys;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -83,8 +86,10 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/delete/{username}", name="admin_delete")
      */
-    public function delete(User $user, EntityManagerInterface $entityManager): Response
+    public function delete(User $user, EntityManagerInterface $entityManager, UpdateJourneys $updateJourneys): Response
     {
+        $updateJourneys->updateUserJourney($user);
+
         $entityManager->remove($user);
         $entityManager->flush();
 
@@ -132,12 +137,53 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/city/{id}/delete", name="admin_city_delete")
      */
-    public function cityDelete(int $id, CityRepository $cityRepository): Response
+    public function cityDelete(int $id, CityRepository $cityRepository, Request $request, StatusRepository $statusRepository, EntityManagerInterface $entityManager, PlaceRepository $placeRepository): Response
     {
         $city = $cityRepository->find($id);
 
+        $canceledStatus = $statusRepository->findOneBy(array("name" => "Annulée"));
+        $canceledPlace = $placeRepository->findOneBy(array("name" => "Inconnue"));
+        $canceledCity = $cityRepository->findOneBy(array("name" => "Inconnue"));
+
+        $form = $this->createForm(DeleteCityType::class, $city);
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()){
+
+            $places = $city->getPlace();
+
+            foreach ($places as $place){
+
+                $journeys = $place->getJourney();
+
+                foreach ($journeys as $journey){
+                    //journey on curse or ended so dont cancel
+                    if ($journey->getStatus()->getName() == "Activité en cours" || $journey->getStatus()->getName() == "Passée" ||  $journey->getStatus()->getName() == "Annulée"){
+                        $journey->setPlace($canceledPlace);
+                        $entityManager->persist($journey);
+                        $entityManager->flush();
+
+                    }else{//cancel other
+                        $journey->setStatus($canceledStatus);
+                        $journey->setPlace($canceledPlace);
+                        $entityManager->persist($journey);
+                        $entityManager->flush();
+                    }
+                }
+                $entityManager->remove($place);
+                $entityManager->flush();
+            }
+
+            $entityManager->remove($city);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Ville supprimé !');
+            return $this->redirectToRoute('admin');
+        }
+
         return $this->render('admin/city_delete.html.twig', [
-            'city' => $city
+            'city' => $city,
+            'form' => $form->createView(),
         ]);
     }
 
@@ -184,16 +230,36 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/place/{id}/delete", name="admin_place_delete")
      */
-    public function placeDelete(int $id, PlaceRepository $placeRepository, EntityManagerInterface $entityManager, Request $request): Response
+    public function placeDelete(int $id, PlaceRepository $placeRepository, EntityManagerInterface $entityManager, Request $request, StatusRepository $statusRepository): Response
     {
         $place = $placeRepository->find($id);
+        $canceledPlace = $placeRepository->findOneBy(array("name" => "Inconnue"));
+        $canceledStatus = $statusRepository->findOneBy(array("name" => "Annulée"));
+
 
         $form = $this->createForm(DeletePlaceType::class, $place);
         $form->handleRequest($request);
 
         if ($form->isSubmitted()){
 
-            dd('supression du lieu');
+            $journeys = $place->getJourney();
+
+            foreach ($journeys as $journey){
+                if ($journey->getStatus()->getName() == "Activité en cours" || $journey->getStatus()->getName() == "Passée" ||  $journey->getStatus()->getName() == "Annulée"){
+                    $journey->setPlace($canceledPlace);
+                    $entityManager->persist($journey);
+                    $entityManager->flush();
+
+                }else{//cancel other
+                    $journey->setStatus($canceledStatus);
+                    $journey->setPlace($canceledPlace);
+                    $entityManager->persist($journey);
+                    $entityManager->flush();
+                }
+            }
+
+            $entityManager->remove($place);
+            $entityManager->flush();
 
             $this->addFlash('success', 'Lieu supprimé !');
             return $this->redirectToRoute('admin');
@@ -363,6 +429,35 @@ class AdminController extends AbstractController
     }
 
     /**
+     * @Route("/admin/journey/{id}/cancel", name="admin_journey_cancel")
+     */
+    public function journeyCancel(int $id, JourneysRepository $journeysRepository, Request $request, EntityManagerInterface $entityManager, StatusRepository $statusRepository): Response
+    {
+        $journey = $journeysRepository->find($id);
+        $journey->setDescription('');
+
+        $form = $this->createForm(CancelJourneyType::class, $journey);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()){
+
+            $status = $statusRepository->findOneBy(array('name' => "Annulée"));
+            $journey->setStatus($status);
+
+            $entityManager->persist($journey);
+            $entityManager->flush();
+
+            $this->addFlash('success', 'Sortie Annulée !');
+            return $this->redirectToRoute('admin');
+        }
+
+        return $this->render('admin/journey_cancel.html.twig', [
+            'journey' => $journey,
+            'form' => $form->createView(),
+        ]);
+    }
+
+    /**
      * @Route("/admin/journey/{id}/delete", name="admin_journey_delete")
      */
     public function journeyDelete(int $id, JourneysRepository $journeysRepository, EntityManagerInterface $entityManager, Request $request): Response
@@ -374,7 +469,8 @@ class AdminController extends AbstractController
 
         if ($form->isSubmitted()){
 
-            dd('supression de la sortie');
+            $entityManager->remove($journey);
+            $entityManager->flush();
 
             $this->addFlash('success', 'Sortie supprimé !');
             return $this->redirectToRoute('admin');

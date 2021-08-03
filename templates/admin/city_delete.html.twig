@@ -8,9 +8,33 @@
     <div class="col-lg-12">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">Villes</h3>
+                <h3 class="card-title">Supprimer une ville</h3>
             </div>
             <div class="card-body">
+
+                <p><span class="font-weight-bold">En supprimant cette ville vous supprimerez tous les lieux associès et annulerez toutes les sorties qui ne sont pas en cours.</span></p>
+
+
+                <p><span class="font-weight-bold">Ville sélectionné :</span> {{ city.name }}</p>
+
+                <p><span class="font-weight-bold">Lieux associés :</span><br />
+                {% for place in city.place %}
+                {{ place.name }},
+                {% endfor %}</p>
+
+                <p><span class="font-weight-bold">Sorties associés :</span><br />
+                {% for place in city.place %}
+                    {% for journey in place.journey %}
+                        {{ journey.name }},
+                    {% endfor %}
+                {% endfor %}</p>
+
+                {{ form_start(form) }}
+
+                <button class="btn btn-primary">Supprimer</button>
+                <a href=".."><button type="button" class="btn">Cancel</button></a>
+
+                {{ form_end(form) }}
 
             </div>
         </div>

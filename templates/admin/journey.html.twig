@@ -12,7 +12,13 @@
                 <div class="col-auto ms-auto d-print-none">
                     <div class="btn-list">
                         <a href="{{ path('admin_journey_add') }}" class="btn btn-primary d-none d-sm-inline-block">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24"
+                                 viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none"
+                                 stroke-linecap="round" stroke-linejoin="round">
+                                <path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
                             Ajouter une sortie
                         </a>
                     </div>
@@ -35,62 +41,65 @@
 
                     {% for journey in journeys %}
 
-                    <tr>
-                        <td>
-                            {{ journey.name }}
-                        </td>
-                        <td>
-                            {{ journey.startingDate|date('d/m/Y H:i') }}
-                        </td>
-                        <td>
-                            {{ journey.deadlineDate|date('d/m/Y') }}
-                        </td>
-                        <td>
-                            {% set nb = 0 %}
+                        <tr>
+                            <td>
+                                {{ journey.name }}
+                            </td>
+                            <td>
+                                {{ journey.startingDate|date('d/m/Y H:i') }}
+                            </td>
+                            <td>
+                                {{ journey.deadlineDate|date('d/m/Y') }}
+                            </td>
+                            <td>
+                                {% set nb = 0 %}
 
-                            {% for user in journey.users %}
+                                {% for user in journey.users %}
 
-                                {% set nb = loop.length %}
+                                    {% set nb = loop.length %}
 
-                            {% endfor %}
+                                {% endfor %}
 
-                            {{ nb }}
+                                {{ nb }}
 
 
-                            /
-                            {{ journey.nbInscriptionMax }}
-                        </td>
-                        <td>
-                            {{ journey.status.name }}
-                        </td>
-                        <td>
-                            {% if journey.user.username != app.user.username %}
-                                <div class="d-flex py-1 align-items-center">
-                                    <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ journey.user.avatar) }})"></span>
-                                    <div class="flex-fill">
-                                        <div class="font-weight-medium">
-                                            <a href="{{ path('profile_details_user', {'username' : journey.user.username}) }}">
-                                                {{ journey.user.username }}
-                                            </a>
+                                /
+                                {{ journey.nbInscriptionMax }}
+                            </td>
+                            <td>
+                                {{ journey.status.name }}
+                            </td>
+                            <td>
+                                {% if journey.user.username != app.user.username %}
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                              style="background-image: url({{ asset('avatars/' ~ journey.user.avatar) }})"></span>
+                                        <div class="flex-fill">
+                                            <div class="font-weight-medium">
+                                                <a href="{{ path('profile_details_user', {'username' : journey.user.username}) }}">
+                                                    {{ journey.user.username }}
+                                                </a>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
 
-                            {% else %}
-                                <div class="d-flex py-1 align-items-center">
-                                    <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ journey.user.avatar) }})"></span>
-                                    <div class="flex-fill">
-                                        <div class="font-weight-medium">{{ journey.user.username }}</div>
+                                {% else %}
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2"
+                                              style="background-image: url({{ asset('avatars/' ~ journey.user.avatar) }})"></span>
+                                        <div class="flex-fill">
+                                            <div class="font-weight-medium">{{ journey.user.username }}</div>
+                                        </div>
                                     </div>
-                                </div>
 
-                            {% endif %}
-                        </td>
+                                {% endif %}
+                            </td>
 
-                        <td class="text-end">
+                            <td class="text-end">
                             <span class="dropdown">
-                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport"
+                                      data-bs-toggle="dropdown">Actions</button>
                               <div class="dropdown-menu dropdown-menu-end">
                                 <a class="dropdown-item" href="{{ path('admin_journey_edit', {'id': journey.id}) }}">
                                     Modifier
@@ -98,11 +107,18 @@
                                 <a class="dropdown-item" href="{{ path('admin_journey_delete', {'id': journey.id}) }}">
                                     Supprimer
                                 </a>
+                                  {% if journey.status.id == 6 %}
 
+                                  {% else %}
+                                      <a class="dropdown-item"
+                                         href="{{ path('admin_journey_cancel', {'id': journey.id}) }}">
+                                    Annuler
+                                    </a>
+                                  {% endif %}
                               </div>
                             </span>
-                        </td>
-                    </tr>
+                            </td>
+                        </tr>
 
                     {% endfor %}
 
