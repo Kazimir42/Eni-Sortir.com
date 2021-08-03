@@ -1,5 +1,4 @@
-{% if app.request.pathinfo == "/login" or app.request.pathinfo == "/register" %}
-
+{% if app.request.pathinfo == "/login" or app.request.pathinfo == "/register" or app.request.pathinfo == "/reset-password" or app.request.pathinfo == "/reset-password/check-email" or app.request.pathinfo == "/reset-password/reset"%}
 {% else %}
     <div class="navbar-expand-md">
         <div class="collapse navbar-collapse" id="navbar-menu">

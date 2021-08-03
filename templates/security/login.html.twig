@@ -17,7 +17,7 @@
 
     <div class="container-tight py-4">
         <div class="text-center mb-4">
-            <a href="."><img src="{{ asset('images/.png') }}" height="36" alt=""></a>
+            <a href="."><img src="{{ asset('images/logo_large.png') }}" height="64" alt=""></a>
         </div>
         <form method="post" class="card card-md">
             <div class="card-body">
@@ -30,7 +30,6 @@
                     <label for="inputPassword" class="form-label">
                         Mot de passe
                         <span class="form-label-description">
-                  {# <a href="./forgot-password.html">I forgot password</a> #}
                 </span>
                     </label>
                     <div class="input-group input-group-flat">
@@ -51,6 +50,7 @@
                 <div class="form-footer">
                     <button type="submit" class="btn btn-primary w-100">Se connecter</button>
                 </div>
+                <a href="{{ path('app_forgot_password_request') }}">Mot de passe oublié ?</a>
             </div>
         </form>
     </div>

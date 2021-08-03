@@ -1,5 +1,4 @@
-{% if app.request.pathinfo == "/login" or app.request.pathinfo == "/register" %}
-
+{% if app.request.pathinfo == "/login" or app.request.pathinfo == "/register" or app.request.pathinfo == "/reset-password" or app.request.pathinfo == "/reset-password/check-email" or app.request.pathinfo == "/reset-password/reset"%}
 {% else %}
     <header class="navbar navbar-expand-md navbar-light d-print-none">
         <div class="container-xl">
