@@ -84,10 +84,22 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
      */
     private $avatar;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Groupe::class, mappedBy="owner")
+     */
+    private $groupe_owner;
+
+    /**
+     * @ORM\ManyToMany(targetEntity=Groupe::class, mappedBy="members")
+     */
+    private $groupes;
+
     public function __construct()
     {
         $this->registered = new ArrayCollection();
         $this->Owner = new ArrayCollection();
+        $this->groupe_owner = new ArrayCollection();
+        $this->groupes = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -307,6 +319,63 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
             if ($owner->getUser() === $this) {
                 $owner->setUser(null);
             }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Groupe[]
+     */
+    public function getGroupeOwner(): Collection
+    {
+        return $this->groupe_owner;
+    }
+
+    public function addGroupeOwner(Groupe $groupeOwner): self
+    {
+        if (!$this->groupe_owner->contains($groupeOwner)) {
+            $this->groupe_owner[] = $groupeOwner;
+            $groupeOwner->setOwner($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupeOwner(Groupe $groupeOwner): self
+    {
+        if ($this->groupe_owner->removeElement($groupeOwner)) {
+            // set the owning side to null (unless already changed)
+            if ($groupeOwner->getOwner() === $this) {
+                $groupeOwner->setOwner(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Groupe[]
+     */
+    public function getGroupes(): Collection
+    {
+        return $this->groupes;
+    }
+
+    public function addGroupe(Groupe $groupe): self
+    {
+        if (!$this->groupes->contains($groupe)) {
+            $this->groupes[] = $groupe;
+            $groupe->addMember($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGroupe(Groupe $groupe): self
+    {
+        if ($this->groupes->removeElement($groupe)) {
+            $groupe->removeMember($this);
         }
 
         return $this;

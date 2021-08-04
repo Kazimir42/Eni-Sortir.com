@@ -47,4 +47,24 @@ class CollegeRepository extends ServiceEntityRepository
         ;
     }
     */
+
+    /**
+     * @return College[]
+     */
+    public function findSearch($search): array
+    {
+        $query = $this
+            ->createQueryBuilder('colleges');
+
+        if (!empty($search)) {
+            $query = $query
+                ->andWhere('colleges.name LIKE :toSearch')
+                ->setParameter('toSearch', "%{$search}%");
+        }
+        $query = $query
+            ->getQuery()
+            ->getResult();
+
+        return $query;
+    }
 }

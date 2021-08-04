@@ -46,4 +46,24 @@ class PlaceRepository extends ServiceEntityRepository
             ->setParameter('id',$id);
         return $query->getQuery()->getArrayResult();
     }
+
+    /**
+     * @return Place[]
+     */
+    public function findSearch($search): array
+    {
+        $query = $this
+            ->createQueryBuilder('places');
+
+        if (!empty($search)) {
+            $query = $query
+                ->andWhere('places.name LIKE :toSearch')
+                ->setParameter('toSearch', "%{$search}%");
+        }
+        $query = $query
+            ->getQuery()
+            ->getResult();
+
+        return $query;
+    }
 }

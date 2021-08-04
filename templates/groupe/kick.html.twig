@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Groupes privés{% endblock %}
+
+{% block body %}
+
+    <div class="col-lg-12">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Expulser un membre</h3>
+            </div>
+            <div class="card-body">
+
+                Etes vous sûr d'expulser {{ user.username }} du groupe ?
+
+                <br /> <br />
+
+                {{ form_start(form) }}
+
+                {{ form_widget(form.kick, {'attr' : {
+                    'class': 'btn btn-primary'
+                }}) }}
+                <a href="."><button type="button" class="btn">Annuler</button></a>
+
+
+                {{ form_end(form) }}
+
+
+
+
+            </div>
+        </div>
+    </div>
+
+
+{% endblock %}

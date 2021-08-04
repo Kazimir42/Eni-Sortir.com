@@ -74,6 +74,11 @@ class Journeys
      */
     private $place;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=groupe::class, inversedBy="journeys")
+     */
+    private $groupe;
+
     public function __construct()
     {
         $this->users = new ArrayCollection();
@@ -227,6 +232,18 @@ class Journeys
     public function setPlace(?Place $place): self
     {
         $this->place = $place;
+
+        return $this;
+    }
+
+    public function getGroupe(): ?groupe
+    {
+        return $this->groupe;
+    }
+
+    public function setGroupe(?groupe $groupe): self
+    {
+        $this->groupe = $groupe;
 
         return $this;
     }

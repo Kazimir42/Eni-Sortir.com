@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Sortir.com | Groupes privés{% endblock %}
+
+{% block body %}
+
+
+    <div class="col-lg-12 mb-3">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title">Vos groupes</h3>
+
+                <div class="col-auto ms-auto d-print-none">
+                    <div class="btn-list">
+                         <a href="{{ path('groupe_create') }}" class="btn btn-primary d-none d-sm-inline-block">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                                Créer un groupe privé
+                            </a>
+                    </div>
+                </div>
+            </div>
+            <div class="list-group list-group-flush list-group-hoverable">
+                {% for groupe in groupesOwner %}{# GROUPE OWNER #}
+                <div class="list-group-item">
+                    <div class="row align-items-center">
+                        <div class="col text-truncate">
+                            <a href="{{ path('groupe_view', {'id': groupe.id}) }}" class="text-body d-block">{{ groupe.name }}</a>
+                            <small class="d-block text-muted text-truncate mt-n1">{{ groupe.description }}</small>
+                        </div>
+                        <div class="col-auto">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="icon" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><path d="M12 17.75l-6.172 3.245l1.179 -6.873l-5 -4.867l6.9 -1l3.086 -6.253l3.086 6.253l6.9 1l-5 4.867l1.179 6.873z"></path></svg>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+
+                {% for groupeUser in user.groupes %}{# GROUPE MEMBER #}
+                    <div class="list-group-item">
+                        <div class="row align-items-center">
+                            <div class="col text-truncate">
+                                <a href="{{ path('groupe_view', {'id': groupeUser.id}) }}" class="text-body d-block">{{ groupeUser.name }}</a>
+                                <small class="d-block text-muted text-truncate mt-n1">{{ groupeUser.description }}</small>
+                            </div>
+                            <div class="col-auto">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-user" width="24" height="24" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round"><path stroke="none" d="M0 0h24v24H0z" fill="none"></path><circle cx="12" cy="7" r="4"></circle><path d="M6 21v-2a4 4 0 0 1 4 -4h4a4 4 0 0 1 4 4v2"></path></svg>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+
+{% endblock %}

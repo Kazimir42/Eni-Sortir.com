@@ -161,7 +161,6 @@ class JourneyController extends AbstractController
 
         $detect = new Mobile_Detect;
         $isMobile = $detect->isMobile();
-        $isMobile = false;
         if ($isMobile){
 
             return $this->redirectToRoute('main');

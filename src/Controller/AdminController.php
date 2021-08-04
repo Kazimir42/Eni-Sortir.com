@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\Data\SearchData;
 use App\Entity\College;
 use App\Entity\Journeys;
 use App\Entity\User;
@@ -15,7 +16,7 @@ use App\Form\EditCityType;
 use App\Form\EditCollegeType;
 use App\Form\EditJourneyAdminType;
 use App\Form\EditPlaceType;
-use App\Form\RegistrationFormType;
+use App\Form\SearchFormType;
 use App\Form\UploadCSVType;
 use App\Repository\CityRepository;
 use App\Repository\CollegeRepository;
@@ -26,8 +27,6 @@ use App\Repository\UserRepository;
 use App\Service\UpdateJourneys;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\File\Exception\FileException;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -193,12 +192,18 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/city", name="admin_city")
      */
-    public function city(CityRepository $cityRepository): Response
+    public function city(CityRepository $cityRepository, Request $request): Response
     {
-        $citys = $cityRepository->findAll();
+        $data = new SearchData();
+        $data->toSearch = $request->get('toSearch', '');
+        $form = $this->createForm(SearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $citys = $cityRepository->findSearch($data->toSearch);
 
         return $this->render('admin/city.html.twig', [
-            'citys' => $citys
+            'citys' => $citys,
+            'form' => $form->createView()
         ]);
     }
 
@@ -286,12 +291,18 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/place", name="admin_place")
      */
-    public function place(PlaceRepository $placeRepository): Response
+    public function place(PlaceRepository $placeRepository, Request $request): Response
     {
-        $places = $placeRepository->findAll();
+        $data = new SearchData();
+        $data->toSearch = $request->get('toSearch', '');
+        $form = $this->createForm(SearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $places = $placeRepository->findSearch($data->toSearch);
 
         return $this->render('admin/place.html.twig', [
-            'places' => $places
+            'places' => $places,
+            'form' => $form->createView()
         ]);
     }
 
@@ -372,12 +383,18 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/college", name="admin_college")
      */
-    public function college(CollegeRepository $collegeRepository): Response
+    public function college(CollegeRepository $collegeRepository, Request $request): Response
     {
-        $colleges = $collegeRepository->findAll();
+        $data = new SearchData();
+        $data->toSearch = $request->get('toSearch', '');
+        $form = $this->createForm(SearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $colleges = $collegeRepository->findSearch($data->toSearch);
 
         return $this->render('admin/college.html.twig', [
-            'colleges' => $colleges
+            'colleges' => $colleges,
+            'form' => $form->createView()
         ]);
     }
 

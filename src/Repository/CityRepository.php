@@ -26,4 +26,24 @@ class CityRepository extends ServiceEntityRepository
             ->select('c');
         return $query->getQuery()->getArrayResult();
     }
+
+    /**
+     * @return City[]
+     */
+    public function findSearch($search): array
+    {
+        $query = $this
+            ->createQueryBuilder('citys');
+
+        if (!empty($search)) {
+            $query = $query
+                ->andWhere('citys.name LIKE :toSearch')
+                ->setParameter('toSearch', "%{$search}%");
+        }
+        $query = $query
+            ->getQuery()
+            ->getResult();
+
+        return $query;
+    }
 }
