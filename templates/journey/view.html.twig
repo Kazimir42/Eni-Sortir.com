@@ -60,9 +60,16 @@
                         <tr>
                             <td>
                                 {% if user.username != app.user.username %}
-
-                                    <a href="{{ path('profile_details_user', {'username' : user.username}) }}">
-                                        {{ user.username }}</a>
+                                    <div class="d-flex py-1 align-items-center">
+                                        <span class="avatar me-2" style="background-image: url({{ asset('avatars/' ~ user.avatar) }})"></span>
+                                        <div class="flex-fill">
+                                            <div class="font-weight-medium">
+                                                <a href="{{ path('profile_details_user', {'username' : user.username}) }}">
+                                                    {{ user.username }}
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
 
                                 {% else %}
 

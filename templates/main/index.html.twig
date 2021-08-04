@@ -159,7 +159,9 @@
 
                         <tr>
                             <td>
-                                {{ journey.name }}
+                                <a href="{{ path('journey_view', {'id' : journey.id}) }}">
+                                    {{ journey.name }}
+                                </a>
                             </td>
                             <td>
                                 {{ journey.startingDate|date('d/m/Y H:i') }}
