@@ -188,11 +188,19 @@ class JourneyController extends AbstractController
                 $journey->setCollege($user->getCollege());
                 $journey->setUser($user);
 
+                $now = new \DateTime();
+                $now->settime(0,0, 0);
+
+
                 //save
                 if($form->get('save')->isClicked()){
                     $status = $statusRepository->findOneBy(array('name' => "Créée"));
                 }else{//publish
-                    $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+                    if ($journey->getDeadlineDate() == $now){
+                        $status = $statusRepository->findOneBy(array('name' => "Clôturée"));
+                    }else{
+                        $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+                    }
                 }
 
                 $journey->setStatus($status);
@@ -239,6 +247,8 @@ class JourneyController extends AbstractController
 
                 if ($form->isSubmitted()){
 
+                    $now = new \DateTime();
+                    $now->settime(0,0, 0);
 
                     //save
                     if($form->get('save')->isClicked() && $form->isValid()){
@@ -253,7 +263,13 @@ class JourneyController extends AbstractController
 
                     }elseif($form->get('publish')->isClicked() && $form->isValid()){//publish
 
-                        $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+
+                        if ($journey->getDeadlineDate() == $now){
+                            $status = $statusRepository->findOneBy(array('name' => "Clôturée"));
+                        }else{
+                            $status = $statusRepository->findOneBy(array('name' => "Ouverte"));
+                        }
+
                         $journey->setStatus($status);
                         $entityManager->persist($journey);
                         $entityManager->flush();
@@ -317,6 +333,9 @@ class JourneyController extends AbstractController
                     $entityManager->persist($journey);
                     $entityManager->flush();
 
+                    $this->addFlash('success', 'Sortie Annulée !');
+                    return $this->redirectToRoute('main');
+
                 }
 
                 return $this->render('journey/cancel.html.twig', [
@@ -332,8 +351,6 @@ class JourneyController extends AbstractController
             $this->addFlash('danger', 'Vous n\'êtes pas le créateur de cette sortie');
             return $this->redirectToRoute('main');
         }
-
-
 
 
 

@@ -468,12 +468,19 @@ class AdminController extends AbstractController
     /**
      * @Route("/admin/journey", name="admin_journey")
      */
-    public function journey(JourneysRepository $journeysRepository): Response
+    public function journey(JourneysRepository $journeysRepository, Request $request): Response
     {
-        $journey = $journeysRepository->findAll();
+        $data = new SearchData();
+        $data->toSearch = $request->get('toSearch', '');
+        $form = $this->createForm(SearchFormType::class, $data);
+        $form->handleRequest($request);
+
+        $journey = $journeysRepository->findSearchMini($data->toSearch);
+
 
         return $this->render('admin/journey.html.twig', [
-            'journeys' => $journey
+            'journeys' => $journey,
+            'form' => $form->createView()
         ]);
     }
 

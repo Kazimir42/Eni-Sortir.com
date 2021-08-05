@@ -3,6 +3,7 @@
 namespace App\Repository;
 
 use App\Data\SearchData;
+use App\Entity\College;
 use App\Entity\Journeys;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
@@ -126,6 +127,27 @@ class JourneysRepository extends ServiceEntityRepository
             ->createQueryBuilder('j')
             ->where('j.startingDate <= :now')
             ->setParameter('now', $now)
+            ->getQuery()
+            ->getResult();
+
+        return $query;
+    }
+
+
+    /**
+     * @return Journeys[]
+     */
+    public function findSearchMini($search): array
+    {
+        $query = $this
+            ->createQueryBuilder('journeys');
+
+        if (!empty($search)) {
+            $query = $query
+                ->andWhere('journeys.name LIKE :toSearch')
+                ->setParameter('toSearch', "%{$search}%");
+        }
+        $query = $query
             ->getQuery()
             ->getResult();
 

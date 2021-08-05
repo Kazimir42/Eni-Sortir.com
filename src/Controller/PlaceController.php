@@ -34,7 +34,7 @@ class PlaceController extends AbstractController
         $form->handleRequest($request);
         $user = $this->getUser();
 
-        if($form->isSubmitted() && $form->isValid() && $user->getIsActive){
+        if($form->isSubmitted() && $form->isValid() && $user->getIsActive()){
 
             $entityManager->persist($place);
             $entityManager->flush();

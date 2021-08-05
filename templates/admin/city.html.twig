@@ -58,29 +58,33 @@
 
                     {% for city in citys %}
 
-                    <tr>
-                        <td>
-                            {{ city.name }}
-                        </td>
-                        <td>
-                            {{ city.postal }}
-                        </td>
+                        {% if city.name == 'Inconnue' %}
 
-                        <td class="text-end">
-                            <span class="dropdown">
-                              <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
-                              <div class="dropdown-menu dropdown-menu-end">
-                                <a class="dropdown-item" href="{{ path('admin_city_edit', {'id': city.id}) }}">
-                                    Modifier
-                                </a>
-                                <a class="dropdown-item" href="{{ path('admin_city_delete', {'id': city.id}) }}">
-                                    Supprimer
-                                </a>
+                        {% else %}
+                        <tr>
+                            <td>
+                                {{ city.name }}
+                            </td>
+                            <td>
+                                {{ city.postal }}
+                            </td>
 
-                              </div>
-                            </span>
-                        </td>
-                    </tr>
+                            <td class="text-end">
+                                <span class="dropdown">
+                                  <button class="btn dropdown-toggle align-text-top" data-bs-boundary="viewport" data-bs-toggle="dropdown">Actions</button>
+                                  <div class="dropdown-menu dropdown-menu-end">
+                                    <a class="dropdown-item" href="{{ path('admin_city_edit', {'id': city.id}) }}">
+                                        Modifier
+                                    </a>
+                                    <a class="dropdown-item" href="{{ path('admin_city_delete', {'id': city.id}) }}">
+                                        Supprimer
+                                    </a>
+
+                                  </div>
+                                </span>
+                            </td>
+                        </tr>
+                        {% endif %}
 
                     {% endfor %}
 

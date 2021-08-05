@@ -22,6 +22,8 @@ class FilterFormType extends AbstractType{
                 'class' => College::class,
                 'choice_label' => 'name',
                 'label' => 'Campus',
+                'placeholder' => 'Sélectionnez un campus',
+                'required' => false
             ])
             ->add('toSearch', TextType::class, [
                 'label' => 'Le nom de la sortie contient : ',
