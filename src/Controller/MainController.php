@@ -40,6 +40,9 @@ class MainController extends AbstractController
         //$result = $time->format('Y-m-d H:i:s');
         //dd($result);
 
+
+
+
         return $this->render('main/index.html.twig', [
             'journeys' => $journeys,
             'form' => $form->createView(),

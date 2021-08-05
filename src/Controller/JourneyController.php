@@ -115,6 +115,7 @@ class JourneyController extends AbstractController
 
         foreach($journey->getUsers() as $journey_user){
             if ($journey_user->getId() == $user->getId()){
+                $error = false;
                 if ($journey->getStatus()->getName() == "Ouverte"){
 
                     $form = $this->createForm(QuitJourneyType::class, $journey);
@@ -132,8 +133,6 @@ class JourneyController extends AbstractController
                         return $this->redirectToRoute('main');
                     }
 
-
-
                     return $this->render('journey/quit.html.twig', [
                         'journey' => $journey,
                         'form' => $form->createView(),
@@ -143,10 +142,14 @@ class JourneyController extends AbstractController
                     return $this->redirectToRoute('main');
                 }
             }else{
-                $this->addFlash('danger', 'Vous n\'êtes pas inscrit à  cette sortie ou êtes l\'oganisateur');
-                return $this->redirectToRoute('main');
+                $error = true;
             }
         }
+        if($error == true){
+            $this->addFlash('danger', 'Vous n\'êtes pas inscrit à  cette sortie ou êtes l\'oganisateur');
+            return $this->redirectToRoute('main');
+        }
+
 
     }
 

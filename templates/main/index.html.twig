@@ -229,9 +229,8 @@
                                   Afficher
                                 </a>
 
-
-                                  {% if app.user.isActive %}
-                                      {% if journey.users is empty %}
+                                  {% if journey.users is empty %}
+                                      {% if app.user.isActive %}
                                           {% if journey.user.username != user.username %}
                                               {% if journey.status.name == "Ouverte" %}
                                                   <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
@@ -242,29 +241,42 @@
                                       {% endif %}
                                   {% endif %}
 
+                                  {% set nbInscrit = 0 %}
+                                  {% for journey_user in journey.users %}
+                                      {% if user.username != journey_user.username %}
+                                          {% set nbInscrit = nbInscrit + 1 %}
+                                      {% endif %}
+                                  {% endfor %}
+
+
+                                  {% set nbInscritTotal = 0 %}
+                                  {% for journey_user in journey.users %}
+                                      {% set nbInscritTotal = nbInscritTotal + 1 %}
+                                  {% endfor %}
 
                                   {% for journey_user in journey.users %}
-
                                       {% if user.username == journey_user.username %}
-                                          {% if journey.status.name == "Ouverte" %}
-                                              <a class="dropdown-item" href="{{ path('journey_quit', {'id': journey.id}) }}">
-                                                Se désister
-                                            </a>
-                                          {% endif %}
-                                      {% else %}
-                                          {% if journey.user.username != user.username %}
-                                              {% if journey.status.name == "Ouverte" %}
-                                                  {% if loop.length < journey.nbInscriptionMax %}
-                                                      {% if app.user.isActive %}
-                                                          <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
-                                                            S'inscrire
-                                                        </a>
-                                                      {% endif %}
-                                                  {% endif %}
+                                          <a class="dropdown-item" href="{{ path('journey_quit', {'id': journey.id}) }}">
+                                              Se désister
+                                          </a>
+                                      {% endif %}
+                                  {% endfor %}
+
+                                  {% set looping = 0 %}
+                                  {% for journey_user in journey.users %}
+                                      {% set looping = looping + 1 %}
+                                      {% if user.username != journey_user.username %}
+                                          {% if nbInscritTotal == nbInscrit %}
+                                              {% if looping == 1 %}
+                                                <a class="dropdown-item" href="{{ path('journey_register', {'id': journey.id}) }}">
+                                                    S'inscrire
+                                                </a>
                                               {% endif %}
                                           {% endif %}
                                       {% endif %}
                                   {% endfor %}
+
+
 
 
 

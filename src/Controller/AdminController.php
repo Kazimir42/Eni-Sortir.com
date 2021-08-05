@@ -415,7 +415,7 @@ class AdminController extends AbstractController
             $entityManager->flush();
 
             $this->addFlash('success', 'Campus créée !');
-            return $this->redirectToRoute('main');
+            return $this->redirectToRoute('admin_college');
         }
 
 
